@@ -1,0 +1,117 @@
+.rangeBarFilled {
+  stroke-width: 0; }
+
+.rangeBar {
+  stroke: #bdbbbc;
+  stroke-width: 10px;
+  stroke-linecap: round; }
+
+.rangeBarFilled {
+  stroke: #63ae2d;
+  stroke-width: 5px; }
+
+text {
+  color: #929292; }
+
+.text-main {
+  font-size: 72px;
+  font-weight: bolder; }
+
+.text-description {
+  font-size: 32px;
+  font-weight: bolder; }
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.toolTip {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: absolute;
+  display: none;
+  width: auto;
+  height: auto;
+  background: none repeat scroll 0 0 white;
+  border: 0 none;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: -3px 3px 15px #888888;
+  color: black;
+  font: 12px sans-serif;
+  padding: 5px;
+  text-align: center; }
+
+.legend {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 60%; }
+
+text {
+  font: 20px sans-serif;
+  font-weight: bold; }
+
+.axis text {
+  font: 16px sans-serif; }
+
+.axis path {
+  fill: none;
+  stroke: #000; }
+
+.axis line {
+  stroke: #666;
+  shape-rendering: crispEdges; }
+
+.x.axis path {
+  stroke: #666;
+  stroke-width: 2px;
+  fill: none; }
+
+.y.axis path {
+  fill: none;
+  stroke: #666;
+  stroke-width: 2px; }
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.toolTip {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: absolute;
+  display: none;
+  width: auto;
+  height: auto;
+  background: none repeat scroll 0 0 white;
+  border: 0 none;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: -3px 3px 15px #888888;
+  color: black;
+  font: 12px sans-serif;
+  padding: 5px;
+  text-align: center; }
+
+.legend {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 60%; }
+
+text {
+  font: 20px sans-serif;
+  font-weight: bold; }
+
+.axis text {
+  font: 16px sans-serif; }
+
+.axis path {
+  fill: none;
+  stroke: #000; }
+
+.axis line {
+  stroke: #666;
+  shape-rendering: crispEdges; }
+
+.x.axis path {
+  stroke: #666;
+  stroke-width: 2px;
+  fill: none; }
+
+.y.axis path {
+  fill: none;
+  stroke: #666;
+  stroke-width: 2px; }
+

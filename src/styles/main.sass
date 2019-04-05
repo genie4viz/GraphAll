@@ -1,0 +1,767 @@
+@charset "utf-8"
+/*! bulma.io v0.7.4 | MIT License | github.com/jgthms/bulma */
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i')
+
+$color-red: #df072c
+$color-red-dark: #b50000
+$color-green: #008800
+$color-green-light: #23D160
+$color-blue: #052453
+$color-disabled: #bdbcbc
+$color-gray: #929292
+$color-gray-dark: #8c8c8c
+$color-gray-light: #e7e7e7
+$color-black: #000
+
+$color-hover: #3273dc
+
+.text-red
+  color: $color-red
+.text-green
+  color: $color-green
+.text-red-dark
+  color: $color-red-dark
+.text-gray
+  color: $color-gray
+.text-gray-dark
+  color: $color-gray-dark
+.text-inherit
+  color: inherit
+.text-black
+  color: $color-black
+
+.bg-red
+  background-color: $color-red
+.bg-blue
+  background-color: $color-blue
+.bg-gray
+  background-color: $color-gray-dark
+
+@import "../node_modules/bulma/sass/utilities/_all"
+@import "../node_modules/bulma/sass/base/_all"
+@import "../node_modules/bulma/sass/elements/_all"
+@import "../node_modules/bulma/sass/components/_all"
+@import "../node_modules/bulma/sass/grid/_all"
+@import "../node_modules/bulma/sass/layout/_all"
+
+@import "bulma-checkradio"
+@import "size-util"
+
+// Latest design from css designer
+// some refactoring/restructuring might be required
+
+$transition: .5s
+
+*
+  outline: none !important
+
+body
+  font-family: 'Open Sans', sans-serif
+  color: $color-black
+  display: flex
+  flex-direction: column
+  min-height: 100vh
+  background-color:#dedede
+
+canvas
+  max-width: 100%
+  height: auto
+
+strong, .box, .table, .table thead td, .table thead th, .navbar-item, .navbar-link
+  color: inherit
+
+hr
+  &.red
+    background-color: $color-red-dark
+    max-width: 150px
+    margin: 42px auto 12px
+
+p, .p
+  margin-bottom: .7rem
+
+.section-home
+  padding-top: 16px
+  padding-bottom: 28px
+  flex-grow: 1
+  //background: url(../static/bg.png) top center no-repeat
+  background-size: cover
+  .container
+    &.content-wrap
+      margin-top: 21px
+      padding-top: 15px
+      padding-bottom: 15px
+      border-radius: 10px
+      background-color:  #fff
+  .breadcrumb
+    font-style: italic
+    padding-top: 15px
+    padding-bottom: 12px
+    li + li:before
+      content: ' > '
+    a
+      color: inherit !important
+      padding: 0 2.5px
+      &:hover
+        color: $color-hover !important
+  .menu-list
+    a
+      &.is-active, &.mPS2id-highlight-first
+        background-color: $color-red
+        color: #fff
+  .tile
+    background-position: center center
+    background-repeat: no-repeat
+    background-size: cover
+    &.is-ancestor
+      margin-left: -1.5px
+      margin-right: -1.5px
+      margin-top: -1.5px
+      &:last-child
+        margin-bottom: -1.5px
+    &.is-parent
+      padding: 1.5px
+    &.is-vertical > .tile.is-child:not(:last-child)
+      margin-bottom: 5px !important
+    &.is-disabled
+      opacity: .7
+      &:after
+        //background: rgba(0, 0, 0, .4) url(../static/svg/lock-white.svg) center center no-repeat
+        background-size: 40px
+  .is-disabled
+    position: relative
+    filter: grayscale(100%)
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      right: 0
+      bottom: 0
+      left: 0
+    a
+      &.link-arrow
+        opacity: .3
+        margin-top: -4px
+        &:after
+          display: none
+        &:before
+          content: ''
+          display: inline-block
+          width: 16px
+          height: 22px
+          margin-right: 8px
+          vertical-align: bottom
+          //background-image: url(../static/svg/lock.svg)
+          background-size: cover
+  .box
+    border-radius: 5px
+    border: 1px solid $color-gray-light
+    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.15) !important
+    padding: 15px 15px 12px
+    transition: box-shadow $transition
+    .img-filter
+      filter: grayscale(1) opacity(.75)
+    &:hover
+      box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.15) !important
+      .img-filter
+        filter: none
+    .box-img
+      margin: -15px
+      margin-bottom: 7px
+      text-align: center
+      border-radius: 5px 5px 0 0
+      overflow: hidden
+      img
+        width: 100%
+      ~ .fz-17
+        margin-top: 0
+        margin-bottom: 3px
+      ~ ul
+        padding-left: 4px
+        padding-right: 0
+    > .fz-17
+      margin-top: 7px
+      margin-bottom: 15px
+    > ul
+      padding-left: 19px
+      padding-right: 24px
+      li
+        position: relative
+        &:before
+          content: '•'
+          position: absolute
+          left: -14px
+      &.fz-17
+        padding-right: 0
+        li
+          margin-bottom: 12px
+      &.list-not
+        li
+          &:before
+            content: '✓'
+            color: $color-green
+            left: -19px
+            font-weight: bold
+    //&.not
+    //  &:before
+    //    content: 'x'
+    //    color: $color-red
+    .table-no
+      margin-top: 0
+      &:not(.table-not)
+        td, th
+          padding-bottom: 18px
+    .table-not
+      thead
+        td, th
+          padding-bottom: 10px
+    ul, p
+      margin-bottom: 13px
+    &.is-disabled
+      .box-img ~ *
+        opacity: .3
+      a
+        &.link-arrow
+          opacity: 1
+    &.box-2
+      padding: 16px 18px 18px
+      &.modal-show
+        display: block
+        cursor: pointer
+        padding-bottom: 56px
+      .fz-17
+        margin-top: 0
+        margin-bottom: 13px
+  .table
+    td, th
+      text-align: inherit
+    tfoot
+      td, th
+        color: inherit
+  .pagination-link, .pagination-ellipsis
+    color: initial
+    font-weight: 700
+    border: 0
+    margin: 0
+    padding: 0 5px
+    min-width: auto
+    &.is-current
+      background-color: transparent
+      color: $color-red-dark
+
+.section-home, .navbar, .modal
+  .container
+    padding: 0 15px
+  .button
+    font-size: 14.5px
+    padding: .3em 1.2em
+    white-space: normal
+    &.is-medium
+      font-size: inherit
+      padding: .4em 1.1em
+    &.is-dark
+      background: $color-gray
+    &.is-danger
+      background: linear-gradient(-90deg, $color-red 0%, $color-red-dark 100%)
+      border-color: $color-red-dark !important
+      &:hover
+        background: linear-gradient(90deg, $color-red 0%, $color-red-dark 100%)
+      &:active
+        background: linear-gradient(0deg, $color-red 0%, $color-red-dark 100%)
+  .button, .file-cta, .file-name, .input, .pagination-ellipsis, .pagination-link, .pagination-next, .pagination-previous, .select select, .textarea
+    border-radius: 6px !important
+    height: auto
+  .input, .textarea
+    border-color: $color-gray
+    box-shadow: none
+    font-size: 12px
+    padding: 5px 12px
+    resize: none
+  .field.has-addons .control:not(:last-child)
+    margin-right: 5px
+
+.py-2
+  padding-top: .5rem
+  padding-bottom: .5rem
+.pt-18
+  padding-top: 18px
+.pt-10
+  padding-top: 10px
+.pt-5
+  padding-top: 5px
+.mt-24
+  margin-top: 24px
+.mb-13
+  margin-bottom: 13px
+.mb-10
+  margin-bottom: 10px
+.mb-24
+  margin-bottom: 24px
+.mr-10
+  margin-right: 10px
+.ml-auto
+  margin-left: auto
+
+.fz-176
+  font-size: 176px
+  line-height: 1.1
+  display: inline-block
+.fz-36
+  font-size: 36px
+.fz-30
+  font-size: 30px
+.fz-27
+  font-size: 27px
+.fz-26
+  font-size: 26px
+.fz-24
+  font-size: 24px
+.fz-21
+  font-size: 21px
+.fz-18
+  font-size: 18px
+  line-height: 1.1
+.fz-17
+  font-size: 17px
+.fz-16
+  font-size: 16.5px
+.fz-15
+  font-size: 15px
+  line-height: 1.2
+.fz-14
+  font-size: 14.5px
+  line-height: 1.4
+.fz-13
+  font-size: 13px
+.fz-12
+  font-size: 12px
+  line-height: 1.3
+.fz-initial
+  font-size: initial
+
+.italic
+  font-style: italic
+
+.input-wrap
+  flex-grow: 1
+  + .control
+    .button
+      padding: 6px
+
+ul
+  &.list-inline
+    display: inline-block
+    li
+      display: inline-block
+      vertical-align: middle
+      + li
+        &:before
+          content: '| '
+  &.list-contacts
+    display: inline-block
+    li
+      display: inline-block
+      vertical-align: middle
+      + li
+        margin-left: 4px
+      img
+        vertical-align: middle
+        margin-right: 2px
+      a
+        vertical-align: middle
+
+a
+  &.underline
+    text-decoration: underline
+  &.link-arrow
+    font-weight: bold
+    font-style: italic
+    display: inline-block
+    color: inherit
+    padding-bottom: 3px
+    &:after
+      content: ''
+      display: inline-block
+      width: 13px
+      height: 11px
+      margin-left: 4px
+      vertical-align: middle
+      //background-image: url(../static/svg/arrow.svg)
+      background-size: cover
+    &:hover
+      opacity: .8
+
+.navbar
+  padding-top: 16px
+  padding-bottom: 19px
+  a
+    color: inherit
+    &:hover
+      color: $color-hover
+  &.is-transparent .navbar-dropdown a.navbar-item:hover
+    color: $color-hover
+  ul
+    &.list-inline
+      font-size: 13px
+      li
+        &:before
+          display: none
+        &:not(:last-child)
+          &:after
+            content: ' |'
+.navbar-link
+  &:after
+    position: static
+    margin-top: 0
+    margin-left: 5px
+    border-color: inherit
+    border-width: 1px
+    width: .4em
+    height: .4em
+.navbar-menu
+  flex-basis: 0
+  flex-wrap: wrap
+  align-items: center
+.navbar-center
+  margin-left: auto
+  margin-right: auto
+.navbar-link.is-active, a.navbar-item.is-active
+  color: $color-red
+  font-weight: bold
+.navbar-item, .navbar-link
+  padding: .5rem .7rem
+  font-size: 13px
+.navbar, .fz-13
+  .button
+    font-size: inherit
+    padding: 4px 3px
+
+.marker
+  color: inherit !important
+  display: inline-block
+  font-size: 18px
+  font-weight: bold
+  padding: 5.5px 12px
+  text-transform: uppercase
+  transition: $transition
+  &:hover
+    opacity: .8
+
+.mark-list
+  display: inline
+  padding: 0
+  margin: 0
+  list-style: none
+  &:before
+    content: '|'
+  li
+    display: inline-block
+    margin-right: 5px
+    a
+      color: inherit !important
+      &:before
+        content: ''
+        display: inline-block
+        width: 13px
+        height: 13px
+        margin-right: 5px
+        vertical-align: middle
+        //background-image: url(../static/svg/mark-black.svg)
+        background-size: cover
+      &:hover
+        opacity: .8
+  &.is-2
+    &:before
+      display: none
+    li
+      margin-right: 14px
+      a
+        &:before
+          opacity: .4
+
+.tile-footer
+  margin-top: auto
+  padding: 14px 16px
+  padding-top: 52px !important
+  text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.35)
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .7))
+  a
+    color: inherit
+    &:hover
+      opacity: .8
+  &.hero-footer
+    text-shadow: none
+    padding-left: 15px !important
+    padding-right: 15px !important
+    padding-bottom: 19px !important
+  .mark-list
+    li
+      a
+        &:before
+          //background-image: url(../static/svg/mark.svg)
+  &.is-xl
+    padding: 22px 21px
+    .mark-list
+      li
+        margin-right: 10px
+        a
+          &:before
+            width: 19px
+            height: 19px
+
+.hero-header
+  min-height: 284px !important
+  margin-bottom: 27px
+
+.tape
+  margin-bottom: 23px
+  padding: 10px 54px 14px 113px
+  border-radius: 10px
+  //background: url(../static/bg-2.png) left center no-repeat
+  background-size: cover
+  &:not(:first-child)
+    margin-top: 28px
+
+.table-no
+  margin-top: 20px
+  margin-bottom: 14px !important
+  td, th
+    border: 0
+    padding: 0
+  + .table-no
+    margin-top: 35px
+
+.table-bottom
+  margin-top: 20px
+  margin-bottom: 20px !important
+  td, th
+    border: 0
+    padding: 5px 0
+    vertical-align: middle
+    &:nth-child(2)
+      padding-left: 14px !important
+      padding-right: 18px !important
+    &:last-child
+      white-space: nowrap
+  + .table-bottom
+    border-top: 1px solid $color-disabled
+    border-bottom: 1px solid $color-disabled
+    td, th
+      padding: 6px 0
+      &:first-child
+        width: 70px
+    tr
+      &:first-child
+        td, th
+          padding-top: 16px
+      &:last-child
+        td, th
+          padding-bottom: 16px
+  .button
+    display: inline-block
+    width: 20px
+    height: 20px
+    font-size: 24px
+    font-weight: 700
+    padding: 0
+    border-radius: 5px !important
+    &:before
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -57%)
+    &.button-info
+      //background-image: url(../static/svg/i.svg)
+      background-position: 40% center
+      background-repeat: no-repeat
+      background-size: 8px
+    &.button-next
+      &:before
+        content: '>'
+    &.button-plus
+      &:before
+        content: '+'
+
+.dropdown-info
+  margin-top: 15px
+  text-align: left
+  left: 50%
+  transform: translateX(-50%)
+  padding: 0 !important
+  .dropdown-content
+    box-shadow: none
+    border-radius: 0
+    background-color: rgba(135, 135, 135, .8)
+    color: #fff
+    padding: 14px 11px
+    &:before
+      content: ''
+      border: 9px solid transparent
+      border-top: 12px solid rgba(135, 135, 135, .8)
+      border-bottom: 0
+      position: absolute
+      transform: translateX(-50%) rotate(180deg)
+      left: 50%
+      bottom: 100%
+.is-up
+  .dropdown-info
+    margin-top: 0
+    margin-bottom: 15px
+    .dropdown-content
+      &:before
+        transform: translateX(-50%)
+        bottom: auto
+        top: 100%
+  .table-bottom
+    margin-top: 7px !important
+    margin-bottom: 0 !important
+    background-color: transparent
+    td, th
+      padding-top: 2px !important
+      padding-bottom: 2px !important
+
+.table-responsive
+  overflow-x: auto
+.table-head
+  td, th
+    border-width: 2px !important
+    border-color: $color-disabled
+  thead
+    white-space: nowrap
+    &:nth-of-type(1)
+      th
+        background-color: $color-red-dark
+        border-color: $color-red-dark
+        border-top: 0
+        border-bottom: 0
+    &:nth-of-type(2)
+      th
+        background-color: $color-gray-light
+        border-top: none
+        border-bottom: none
+        font-weight: normal
+  tbody
+    td
+      border-top: none
+    tr:not(:last-child)
+      td
+        border-bottom: none
+  .link-arrow
+    opacity: .4
+
+.table-head-2
+  thead
+    white-space: normal
+
+.grid-1
+  margin-top: 1px !important
+  margin-bottom: 18px !important
+.article
+  .article-img
+    position: relative
+    font-size: 0
+  .article-descr
+    a
+      color: inherit
+      &:hover
+        opacity: .8
+  &.is-disabled
+    .article-img
+      opacity: .8
+      &:after
+        content: ''
+        position: absolute
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+        //background: rgba(0, 0, 0, .4) url(../static/svg/lock-white.svg) center center no-repeat
+        background-size: 17px
+    .article-descr
+      opacity: .3
+      position: relative
+
+.grid-2
+  margin-top: -2px
+  .box
+    height: 100%
+    &.box-2
+      height: 100%
+      margin-top: 0
+
+.page-footer
+  color: #fff
+  .footer-top
+    padding-top: 21px
+    padding-bottom: 36px
+    .columns
+      align-items: flex-end
+    .footer-logo
+      display: inline-block
+      margin-bottom: 6px
+    .fz-17
+      margin-bottom: 13px
+  .footer-bottom
+    padding-top: 12px
+    padding-bottom: 12px
+  a
+    color: inherit
+    &:hover
+      color: $color-hover
+
+.links
+  a
+    color: inherit
+    &:hover
+      color: $color-hover
+
+.title-sm
+  padding-top: 8px
+  margin-bottom: 32px
+
+.right-col
+  position: relative
+  &:before
+    content: ''
+    position: absolute
+    width: 2px
+    background-color: $color-gray-dark
+    left: 0
+    top: 23px
+    bottom: 30px
+
+.grid-hover
+  article
+    position: relative
+    .summary
+      padding: 15px
+    .hover
+      padding: 15px
+      position: absolute
+      left: 0
+      right: 0
+      top: -10px
+      min-height: 100%
+      background: rgba(255, 255, 255, .9)
+      opacity: 0
+      transition: $transition
+    &:hover
+      .hover
+        top: 0
+        opacity: 1
+
+.menu-sticky
+  position: sticky
+  top: 20px
+
+.collapse:not(.show)
+  display: none
+
+.collapsing
+  position: relative
+  height: 0
+  overflow: hidden
+  transition: height .35s ease
+
+.faq-wrap
+  padding-bottom: 40px
