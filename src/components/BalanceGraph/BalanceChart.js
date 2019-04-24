@@ -28,9 +28,9 @@ class Chart extends Component {
       s_imgW = svgDimen.width * 0.6,
       s_imgH = (s_imgW / o_imgW) * o_imgH,
       top_legend_height = svgDimen.width * 0.03,
-      legend_label_height = svgDimen.width * 0.03;
+      legend_label_height = svgDimen.width * 0.045;
 
-    let left_data = [data.TotalCash, data.NonCurrentAssetsNoGoodwill, data.CurrentAssetsNoCash, data.Goodwill];
+    let left_data = [data.TotalCash, data.CurrentAssetsNoCash, data.NonCurrentAssetsNoGoodwill, data.Goodwill];
     let right_data = [data.TotalEquity, 0, 0, data.TotalLiabilities];
 
     return (
@@ -38,22 +38,10 @@ class Chart extends Component {
         <g width={svgDimen.width} height={svgDimen.height} transform={`translate(${margins.left}, 0)`}>
           <g className="chartBase" transform={`translate(${svgDimen.width / 2} , 0)`}>
             <g className="topLegend" transform={`translate(0 , ${top_legend_height - 10})`}>
-              <text
-                x={-s_imgW / 4}
-                y={0}
-                alignmentBaseline="hanging"
-                textAnchor="middle"
-                style={{ fontSize: 16, fill: '#bdbbbc', fontWeight: 'bold' }}
-              >
+              <text x={-s_imgW / 3} dy=".5em" style={{ fontSize: 16, fill: '#bdbbbc', fontWeight: 'bold' }}>
                 Assets
               </text>
-              <text
-                x={s_imgW / 4}
-                y={0}
-                alignmentBaseline="hanging"
-                textAnchor="middle"
-                style={{ fontSize: 16, fill: '#bdbbbc', fontWeight: 'bold' }}
-              >
+              <text x={s_imgW / 12} dy=".5em" style={{ fontSize: 16, fill: '#bdbbbc', fontWeight: 'bold' }}>
                 Total Liabilities
               </text>
             </g>
@@ -61,46 +49,54 @@ class Chart extends Component {
               className="leftLegend"
               transform={`translate(${-svgDimen.width / 2} , ${top_legend_height + legend_label_height})`}
             >
+            <g>
               <circle r="5" cx="35" cy="0" fill="#63ae2d" />
               <text
-                x="50"
+                x="45"
                 y="2"
                 textAnchor="start"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fontSize: 14, fill: '#bdbbbc' }}
               >
                 Cash
               </text>
+              </g>
+              <g>
               <circle r="5" cx="35" cy={legend_label_height} fill="#a6ae2d" />
               <text
-                x="50"
+                x="45"
                 y={legend_label_height + 2}
                 textAnchor="start"
-                alignmentBaseline="middle"
-                style={{ fontSize: 14, fill: '#bdbbbc' }}
-              >
-                Fixed
-              </text>
-              <circle r="5" cx="35" cy={legend_label_height * 2} fill="#ef7d00" />
-              <text
-                x="50"
-                y={legend_label_height * 2 + 2}
-                textAnchor="start"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fontSize: 14, fill: '#bdbbbc' }}
               >
                 Current
               </text>
+              </g>
+              <g>
+              <circle r="5" cx="35" cy={legend_label_height * 2} fill="#ef7d00" />
+              <text
+                x="45"
+                y={legend_label_height * 2 + 2}
+                textAnchor="start"
+                dominantBaseline="middle"
+                style={{ fontSize: 14, fill: '#bdbbbc' }}
+              >
+                Fixed
+              </text>
+              </g>
+              <g>
               <circle r="5" cx="35" cy={legend_label_height * 3} fill="#de0730" />
               <text
-                x="50"
+                x="45"
                 y={legend_label_height * 3 + 2}
                 textAnchor="start"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fontSize: 14, fill: '#bdbbbc' }}
               >
                 Goodwill
               </text>
+              </g>
             </g>
             <g
               className="rightLegend"
@@ -108,20 +104,20 @@ class Chart extends Component {
             >
               <circle r="5" cx="10" cy="0" fill="#63ae2d" />
               <text
-                x="30"
+                x="20"
                 y="2"
                 textAnchor="start"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fontSize: 14, fill: '#bdbbbc' }}
               >
                 Equity
               </text>
               <circle r="5" cx="10" cy={legend_label_height} fill="#de0730" />
               <text
-                x="30"
+                x="20"
                 y={legend_label_height + 2}
                 textAnchor="start"
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 style={{ fontSize: 14, fill: '#bdbbbc' }}
               >
                 Debt
@@ -133,12 +129,14 @@ class Chart extends Component {
                 svgDimen={svgDimen}
                 bar_height={svgDimen.height - s_imgH - top_legend_height - legend_label_height}
                 data={left_data}
+                identy="left"
               />
               <Bar
                 transX={s_imgW / 4}
                 svgDimen={svgDimen}
                 bar_height={svgDimen.height - s_imgH - top_legend_height - legend_label_height}
                 data={right_data}
+                identy="right"
               />
             </g>
             <image
@@ -150,11 +148,12 @@ class Chart extends Component {
             />
             <g className="bottomLegend" transform={`translate(0 , ${svgDimen.height - legend_label_height + 10})`}>
               <text
-                alignmentBaseline="hanging"
+                dominantBaseline="middle"
                 textAnchor="middle"
-                style={{ fontSize: 16, fill: '#bdbbbc', fontWeight: 'bold' }}
+                dy="6"
+                style={{ fontSize: 16, fill: '#000', fontWeight: 'bold' }}
               >
-                € {(data.TotalLiabilitiesStockholdersEquity / 100).toFixed(2)} mld
+                € {(data.TotalLiabilitiesStockholdersEquity / 100).toFixed(0)} mld
               </text>
             </g>
           </g>
@@ -166,33 +165,36 @@ class Chart extends Component {
 class Bar extends Component {
   constructor(props) {
     super(props);
-    const { transX, bar_height, svgDimen, data } = this.props;
+    const { transX, bar_height, svgDimen, data, identy } = this.props;
     this.state = {
       transX: transX,
       bar_height: bar_height,
       svgDimen: svgDimen,
-      data: data
+      data: data,
+      identy: identy
     };
   }
   componentDidMount() {
     this.drawBar();
   }
   componentWillReceiveProps(nextProps) {
-    const { transX, svgDimen, bar_height, data } = nextProps;
+    const { transX, svgDimen, bar_height, data, identy } = nextProps;
     this.setState({
       transX: transX,
       bar_height: bar_height,
       svgDimen: svgDimen,
-      data: data
+      data: data,
+      identy: identy
     });
   }
   componentDidUpdate() {
     this.drawBar();
   }
   drawBar() {
-    const { svgDimen, bar_height, data } = this.state;
+    const { svgDimen, bar_height, data, identy } = this.state;
 
     let bar_width = svgDimen.width * 0.25,
+      durate = 1000,
       rate = bar_height / 100;
     let step = 0;
 
@@ -210,20 +212,42 @@ class Bar extends Component {
       t_height += data[p] * rate;
     }
 
+    function retHeight(i) {
+      let sh = 0;
+      for (let k = 0; k < i; k++) {
+        sh += data[k] * rate;
+      }
+      return sh;
+    }
     for (let i = 0; i < data.length; i++) {
       barArea
-        .append('rect')
-        .attr('x', -bar_width / 2)
-        .attr('y', function() {
-          let sh = 0;
-          for (let k = 0; k < i; k++) {
-            sh += data[k] * rate;
-          }
-          return -(t_height - sh);
+        .append('path')
+        .attr('class', 'balance_bar' + identy + i)
+        .attr('d', () => {
+          return (
+            'M' +
+            -bar_width / 2 +
+            ',0l' +
+            bar_width +
+            ',0l0,' +
+            -(t_height - retHeight(i)) +
+            'l' +
+            -bar_width +
+            ',0l0,' +
+            (t_height - retHeight(i)) +
+            'z'
+          );
         })
-        .attr('width', bar_width)
-        .attr('height', data[i] * rate)
+        // .attr("d", () => {
+        //   return 'M' + (-bar_width/2) + ',0l' + bar_width + ',0l0,-1l' + (-bar_width) + ',0l0,1z';
+        // })
         .style('fill', colors[i]);
+      // .style('opacity', 0);
+
+      // d3.select('.balance_bar' + identy + i)
+      //   .transition().duration(durate)
+      //   .style('opacity', 1);
+
       barArea
         .append('text')
         .attr('x', 0)
@@ -234,7 +258,7 @@ class Bar extends Component {
           }
           return -(t_height - sh - (data[i] * rate) / 2);
         })
-        .attr('alignment-baseline', 'central')
+        .attr('dominant-baseline', 'middle')
         .style('fill', 'white')
         .style('opacity', function() {
           if (data[i] == 0) {
@@ -245,7 +269,7 @@ class Bar extends Component {
         })
         .style('text-anchor', 'middle')
         .style('font-size', 16)
-        .text(data[i] > 10 ? data[i].toFixed(2) + '%' : '');
+        .text(data[i] > 10 ? data[i].toFixed(0) + '%' : '');
     }
   }
   render() {
@@ -285,13 +309,13 @@ class Handle extends Component {
     const { initialValue, xScale } = this.state;
     const { handle } = this.props;
 
-    const circle = <circle r="10px" fill="#de0730" />;
-    const text = <text style={{ opacity: 1, fontSize: 14, fill: '#de0730' }} />;
+    const circle = <circle r="7px" fill="#de0730" />;
+    const text = <text style={{ opacity: 1, fontSize: 14, fill: '#de0730', fontWeight: '600' }} />;
 
     return (
       <g
         className={handle}
-        transform={`translate(${xScale(initialValue)}, 20)`}
+        transform={`translate(${xScale(initialValue)}, 19)`}
         onMouseOver={this.onMouseOver.bind(this)}
       >
         {text}
@@ -306,10 +330,10 @@ class Handle extends Component {
     let mouseValue, trueMouseValue;
 
     if (prevProps.svgDimen.width != this.state.svgDimen.width || prevProps.years != this.state.years) {
-      d3.select('.' + handle).attr('transform', 'translate(' + xScale(initialValue) + ', 20)');
+      d3.select('.' + handle).attr('transform', 'translate(' + xScale(initialValue) + ', 19)');
       d3.select('.' + handle)
         .select('text')
-        .attr('alignment-baseline', 'middle')
+        .attr('dominant-baseline', 'middle')
         .attr('dy', -15)
         .style('text-anchor', 'middle')
         .text(initialValue);
@@ -324,10 +348,10 @@ class Handle extends Component {
       function dragstart() {
         mouseValue = d3.mouse(this)[0];
         trueMouseValue = getTrueMouseValue(mouseValue);
-        d3.select('.' + handle).attr('transform', 'translate(' + mouseValue + ', 20)');
+        d3.select('.' + handle).attr('transform', 'translate(' + mouseValue + ', 19)');
         d3.select('.' + handle)
           .select('text')
-          .attr('alignment-baseline', 'middle')
+          .attr('dominant-baseline', 'middle')
           .attr('dy', -15)
           .style('text-anchor', 'middle')
           .text(trueMouseValue);
@@ -336,17 +360,17 @@ class Handle extends Component {
         mouseValue = d3.mouse(this)[0];
         trueMouseValue = getTrueMouseValue(mouseValue);
         if (mouseValue > margins.left && mouseValue < svgDimen.width - margins.right) {
-          d3.select('.' + handle).attr('transform', 'translate(' + mouseValue + ', 20)');
+          d3.select('.' + handle).attr('transform', 'translate(' + mouseValue + ', 19)');
           d3.select('.' + handle)
             .select('text')
-            .attr('alignment-baseline', 'middle')
+            .attr('dominant-baseline', 'middle')
             .attr('dy', -15)
             .style('text-anchor', 'middle')
             .text(trueMouseValue);
         }
       }
       function dragend() {
-        d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 20)');
+        d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 19)');
         onChangeYear(trueMouseValue);
       }
       function getTrueMouseValue(mouseValue) {
@@ -394,7 +418,8 @@ class Axis extends React.Component {
       .selectAll('text')
       .style('opacity', d => (d == first || d == last ? 1 : 0))
       .style('font-size', '14px')
-      .style('fill', 'black');
+      .style('font-style', 'italic')
+      .style('fill', 'grey');
 
     d3.select(this.axisElement)
       .selectAll('line')
@@ -433,7 +458,7 @@ class RangeSlider extends Component {
   render() {
     const { width, height, years } = this.state;
     const { onChangeYear } = this.props;
-    const margins = { top: 20, right: 50, bottom: 20, left: 40 },
+    const margins = { top: 20, right: 75, bottom: 20, left: 65 },
       svgDimen = { width: width - margins.left - margins.right, height: height };
 
     const RangeBar = (
@@ -443,7 +468,7 @@ class RangeSlider extends Component {
         y="15"
         width={svgDimen.width - margins.left - margins.right}
         transform={`translate(${margins.left}, 0)`}
-        height="10"
+        height="8"
         fill="grey"
       />
     );
@@ -469,7 +494,7 @@ class RangeSlider extends Component {
             <Handle
               onChangeYear={onChangeYear}
               handle="handle"
-              initialValue={first}
+              initialValue={last}
               years={years}
               margins={margins}
               svgDimen={svgDimen}
@@ -491,7 +516,7 @@ class BalanceChart extends Component {
     this.state = {
       data: sort_data,
       sliderData: this.parseYear(sort_data),
-      balanceChartData: sort_data[0],
+      balanceChartData: sort_data[sort_data.length - 1],
       width: width,
       height: height
     };
@@ -502,7 +527,7 @@ class BalanceChart extends Component {
 
     this.setState({
       sliderData: this.parseYear(sort_data),
-      balanceChartData: sort_data[0],
+      balanceChartData: sort_data[sort_data.length - 1],
       data: sort_data,
       width: width,
       height: height

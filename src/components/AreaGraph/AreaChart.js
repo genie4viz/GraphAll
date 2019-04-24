@@ -7,14 +7,16 @@ class Chart extends Component {
     this.state = {
       margins: this.props.margins,
       svgDimen: this.props.svgDimen,
-      partial: this.props.partial
+      partial: this.props.partial,
+      column: this.props.column
     };
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       svgDimen: nextProps.svgDimen,
       margins: nextProps.margins,
-      partial: nextProps.partial
+      partial: nextProps.partial,
+      column: nextProps.column
     });
   }
   componentDidMount() {
@@ -24,11 +26,11 @@ class Chart extends Component {
     this.drawGraph();
   }
   drawGraph() {
-    const { svgDimen, margins, partial } = this.state;
+    const { svgDimen, margins, partial, column } = this.state;
 
     let parseTime = d3.timeParse('%Y-%m-%d');
 
-    let data = partial.columns.slice(2).map(function(id) {
+    let data = column.slice(2).map(function(id) {
       return {
         id: id,
         values: partial.map(function(d) {
@@ -46,10 +48,9 @@ class Chart extends Component {
       return d;
     });
 
-    let min = 0, //d3.min(data[0].values, (d) => d.value),
+    let min = d3.min(area_data, d => d.value),
       max = d3.max(area_data, d => d.value);
-    let partial_len = area_data.length;
-
+    let rmin = min - (max - min) * 0.1;
     let x = d3
       .scaleTime()
       .range([margins.left, svgDimen.width - margins.right])
@@ -63,13 +64,13 @@ class Chart extends Component {
     let y = d3
       .scaleLinear()
       .range([svgDimen.height - margins.bottom, margins.top])
-      .domain([min, max]);
+      .domain([rmin, max]);
 
     let area = d3
       .area()
       .curve(d3.curveMonotoneX)
       .x(d => x(d.date))
-      .y0(y(0))
+      .y0(y(rmin))
       .y1(d => y(d.value));
 
     let svg = d3.select(this.el);
@@ -87,13 +88,24 @@ class Chart extends Component {
           .tickFormat(d3.timeFormat('%Y-%m-%d'))
       )
       .selectAll('text')
-      .style('font-size', '10px')
-      .style('fill', 'black');
+      .style('font-size', '9pt')
+      .style('fill', 'grey');
     svg
       .append('g')
-      .call(d3.axisLeft(y).tickSize(0))
-      .select('.domain')
-      .style('opacity', 0);
+      .attr('transform', 'translate(50,0)')
+      .attr('stroke-width', 1.5)
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(3)
+          .ticks(10)
+      )
+      .selectAll('text')
+      .attr('x', -5)
+      .style('font-size', '10pt')
+      .style('fill', 'grey');
+    // .select('.domain')
+    // .style('opacity', 0);
 
     svg
       .selectAll('.area')
@@ -107,18 +119,18 @@ class Chart extends Component {
 
     const bisectDate = d3.bisector(function(d) {
       return d.date;
-    }).left;
+    }).right;
 
     svg
       .append('rect')
-      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
+      // .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
       .attr('class', 'overlay')
       .attr('width', svgDimen.width - margins.right)
       .attr('height', svgDimen.height - margins.bottom)
       .style('opacity', 0)
       .on('mousemove', function() {
         var x0 = x.invert(d3.mouse(this)[0]),
-          i = bisectDate(area_data, x0, 1),
+          i = bisectDate(area_data, x0, 0),
           d0 = area_data[i - 1],
           d1 = area_data[i],
           d = x0 - d0.date > d1.date - x0 ? d1 : d0;
@@ -159,7 +171,7 @@ class Chart extends Component {
             .attr('x', 0)
             .style('font-weight', 'bold')
             .style('font-size', 14)
-            .style('fill', 'whredite')
+            .style('fill', 'white')
             .text(d => '€ ' + d)
         );
 
@@ -168,8 +180,6 @@ class Chart extends Component {
       path
         .attr('d', `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 10}h-${w + 20}z`)
         .attr('transform', `translate(0,5)`);
-      // text.attr("transform", `translate(${-w / 2},${y + 45})`);
-      // path.attr("d", `M0,5l-3,10h${-w / 2 - 10}v${h + 10}h${w + 26}v${-h - 10}L3,10L0,5z`);
     }
   }
 
@@ -182,37 +192,34 @@ class Chart extends Component {
 class RangeHandle extends React.Component {
   constructor(props) {
     super(props);
-    const { svgDimen, margins, rangeStart, rangeEnd, xScale } = this.props;
+    const { svgDimen, margins, rangeStart, rangeEnd, xScale, domainRange } = this.props;
     this.state = {
       svgDimen: svgDimen,
       margins: margins,
       rangeStart: rangeStart,
       rangeEnd: rangeEnd,
       xScale: xScale,
+      domainRange: domainRange,
       handle: ''
     };
   }
   componentWillReceiveProps(nextProps) {
-    const { svgDimen, margins, rangeStart, rangeEnd, xScale } = nextProps;
+    const { svgDimen, margins, rangeStart, rangeEnd, xScale, domainRange } = nextProps;
     this.setState({
       svgDimen: svgDimen,
       margins: margins,
       rangeStart: rangeStart,
       rangeEnd: rangeEnd,
       xScale: xScale,
-      handle: ''
+      domainRange: domainRange,
+      handle: 'sliderBar'
     });
   }
   onMouseOver(e) {
-    if (e.target.parentNode.className.baseVal == 'sliderBar') {
-      this.setState({
-        handle: ''
-      });
-    } else {
-      this.setState({
-        handle: e.target.parentNode.className.baseVal
-      });
-    }
+    // console.log(e.target.parentNode.className.baseVal, "overed element");
+    this.setState({
+      handle: e.target.parentNode.className.baseVal
+    });
   }
   render() {
     const { svgDimen, margins, rangeStart, rangeEnd, xScale } = this.state;
@@ -228,6 +235,7 @@ class RangeHandle extends React.Component {
     );
     const rectFillBar = (
       <rect
+        id="rectFillBar"
         x={xScale(rangeStart)}
         y="0"
         width={xScale(rangeEnd) - xScale(rangeStart)}
@@ -235,63 +243,74 @@ class RangeHandle extends React.Component {
         fill="rgba(150, 150, 150, 0.65)"
       />
     );
-
     return (
       <g className="sliderBar" onMouseOver={this.onMouseOver.bind(this)}>
         {rectFillBar}
-        <g className="handleLeft" ref={el => (this.handleLeft = el)} transform={`translate(${xScale(rangeStart)}, 0)`}>
+        <g className="handleLeft" transform={`translate(${xScale(rangeStart)}, 0)`}>
           {rectHandler}
         </g>
-        <g className="handleRight" ref={el => (this.handleRight = el)} transform={`translate(${xScale(rangeEnd)}, 0)`}>
+        <g className="handleRight" transform={`translate(${xScale(rangeEnd)}, 0)`}>
           {rectHandler}
         </g>
       </g>
     );
   }
   componentDidUpdate() {
-    const { xScale, handle } = this.state;
+    const { xScale, handle, rangeStart, rangeEnd, domainRange } = this.state;
     const { changeHandlerValue } = this.props;
     let trueMouseValue,
-      that = this;
+      that = this,
+      left_margin,
+      startPos,
+      endPos,
+      rect_width,
+      rectX;
 
     let drag;
-    if (handle == '') {
-      drag = d3
-        .drag()
-        .on('start', null)
-        .on('drag', null)
-        .on('end', null);
-      d3.select('.sliderBar').call(drag);
-    } else {
-      drag = d3
-        .drag()
-        .on('start', dragstart)
-        .on('drag', draged)
-        .on('end', dragend);
-      d3.select('.sliderBar').call(drag);
-    }
+    drag = d3
+      .drag()
+      .on('start', dragstart)
+      .on('drag', draged)
+      .on('end', dragend);
+    d3.select('.sliderBar').call(drag);
     function dragstart() {
-      trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
-    }
-    function draged() {
-      if (that.state.rangeEnd - that.state.rangeStart >= 5 * 24 * 3600 * 1000) {
+      if (handle == 'sliderBar') {
+        rectX = d3.select("rect[id='rectFillBar']").attr('x');
+        rect_width = d3.select("rect[id='rectFillBar']").attr('width');
+        left_margin = d3.mouse(this)[0] - rectX;
+      } else if (handle == 'handleLeft' || handle == 'handleRight') {
         trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
-        d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 0)');
-        changeHandlerValue(handle, trueMouseValue);
       }
     }
-    function dragend() {
-      if (that.state.rangeEnd - that.state.rangeStart >= 5 * 24 * 3600 * 1000) {
-        d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 0)');
-        changeHandlerValue(handle, trueMouseValue);
+    function draged() {
+      if (handle == 'sliderBar') {
+        var mouseValue = d3.mouse(this)[0];
+        startPos = mouseValue - left_margin;
+        endPos = 1.0 * startPos + 1.0 * rect_width;
+        if (xScale(getTrueMouseValue(startPos)) == xScale(domainRange.start)) return;
+        if (xScale(getTrueMouseValue(endPos)) == xScale(domainRange.end)) return;
+
+        d3.select('.handleLeft').attr('transform', 'translate(' + xScale(getTrueMouseValue(startPos)) + ', 0)');
+        d3.select('.handleRight').attr('transform', 'translate(' + xScale(getTrueMouseValue(endPos)) + ', 0)');
+        changeHandlerValue(handle, getTrueMouseValue(startPos), getTrueMouseValue(endPos));
       } else {
         if (handle == 'handleLeft') {
-          changeHandlerValue(handle, that.state.rangeStart - 24 * 3600 * 1000);
-        } else {
-          changeHandlerValue(handle, that.state.rangeEnd + 24 * 3600 * 1000);
+          trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
+          if (rangeEnd - trueMouseValue >= 5 * 24 * 3600 * 1000) {
+            d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 0)');
+            changeHandlerValue(handle, trueMouseValue, 0);
+          }
+        }
+        if (handle == 'handleRight') {
+          trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
+          if (trueMouseValue - rangeStart >= 5 * 24 * 3600 * 1000) {
+            d3.select('.' + handle).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 0)');
+            changeHandlerValue(handle, trueMouseValue, 0);
+          }
         }
       }
     }
+    function dragend() {}
     function getTrueMouseValue(mouseValue) {
       return Math.round(xScale.invert(mouseValue));
     }
@@ -301,13 +320,15 @@ class RangeHandle extends React.Component {
 class AreaChart extends Component {
   constructor(props) {
     super(props);
-    const { data, width, height } = this.props;
+    const { data, companyName, column, width, height } = this.props;
     let parseTime = d3.timeParse('%Y-%m-%d');
     let sort_data = data.sort((x, y) => d3.ascending(parseTime(x.Date), parseTime(y.Date)));
     let dates = sort_data.map(d => parseTime(d.Date));
     this.state = {
       total: sort_data,
       partial: sort_data,
+      companyName: companyName,
+      column: column,
       width: width,
       height: height,
       rangeStart: dates[0],
@@ -315,13 +336,15 @@ class AreaChart extends Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    const { data, width, height } = nextProps;
+    const { data, companyName, column, width, height } = nextProps;
     let parseTime = d3.timeParse('%Y-%m-%d');
     let sort_data = data.sort((x, y) => d3.ascending(parseTime(x.Date), parseTime(y.Date)));
     let dates = sort_data.map(d => parseTime(d.Date));
     this.setState({
       total: sort_data,
       partial: sort_data,
+      companyName: companyName,
+      column: column,
       width: width,
       height: height,
       rangeStart: dates[0],
@@ -335,13 +358,13 @@ class AreaChart extends Component {
     this.renderSliderGraph();
   }
   renderSliderGraph() {
-    const { width, height, total } = this.state;
-    const margins = { top: 20, right: 20, bottom: 20, left: 20 },
-      svgDimen = { width: width - margins.left - margins.right, height: height / 6 };
+    const { width, column, height, total } = this.state;
+    const margins = { top: 20, right: 20, bottom: 20, left: 50 },
+      svgDimen = { width: width, height: height / 6 };
 
     let parseTime = d3.timeParse('%Y-%m-%d');
 
-    let data = total.columns.slice(2).map(function(id) {
+    let data = column.slice(2).map(function(id) {
       return {
         id: id,
         values: total.map(function(d) {
@@ -388,14 +411,19 @@ class AreaChart extends Component {
           .tickFormat(d3.timeFormat('%Y-%m-%d'))
       )
       .selectAll('text')
-      .style('font-size', '10px')
-      .style('fill', 'black')
+      .style('font-size', '9pt')
+      .style('fill', 'grey')
       .select('.domain')
       .style('opacity', 0);
     // .attr("transform", "rotate(-65)");
     graph
       .append('g')
-      .call(d3.axisLeft(y).tickSize(3))
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(3)
+          .ticks(5)
+      )
       .select('.domain')
       .style('opacity', 0);
 
@@ -407,8 +435,8 @@ class AreaChart extends Component {
       .attr('d', d => area(d.values))
       .style('fill', '#ddd');
   }
-  changeHandlerValue = (handler, date) => {
-    const { total, rangeStart, rangeEnd } = this.state;
+  changeHandlerValue = (handler, date, addDate) => {
+    const { total, column, rangeStart, rangeEnd } = this.state;
     let parseTime = d3.timeParse('%Y-%m-%d');
     let partialData = [];
     if (handler == 'handleLeft') {
@@ -417,21 +445,33 @@ class AreaChart extends Component {
           partialData.push(total[i]);
         }
       }
-      partialData.columns = total.columns;
       this.setState({
         rangeStart: date,
-        partial: partialData
+        partial: partialData,
+        column: column
       });
-    } else {
+    } else if (handler == 'handleRight') {
       for (let i = 0; i < total.length; i++) {
         if (parseTime(total[i].Date) <= date && parseTime(total[i].Date) >= rangeStart) {
           partialData.push(total[i]);
         }
       }
-      partialData.columns = total.columns;
       this.setState({
         rangeEnd: date,
-        partial: partialData
+        partial: partialData,
+        column: column
+      });
+    } else if (handler == 'sliderBar') {
+      for (let i = 0; i < total.length; i++) {
+        if (parseTime(total[i].Date) <= addDate && parseTime(total[i].Date) >= date) {
+          partialData.push(total[i]);
+        }
+      }
+      this.setState({
+        rangeStart: date,
+        rangeEnd: addDate,
+        partial: partialData,
+        column: column
       });
     }
   };
@@ -442,47 +482,50 @@ class AreaChart extends Component {
     return context.measureText(text).width;
   }
   render() {
-    const { width, height, total, partial, rangeStart, rangeEnd } = this.state;
-    let margins = { top: 20, right: 20, bottom: 20, left: 20 },
-      svgDimenSlider = { width: width - margins.left - margins.right, height: height / 6 },
-      svgDimenGraph = { width: width - margins.left - margins.right, height: (height * 4) / 6 },
-      svgDimen = { width: width - margins.left - margins.right, height: height };
+    const { width, height, column, total, partial, rangeStart, rangeEnd, companyName } = this.state;
+    let margins = { top: 20, right: 20, bottom: 20, left: 50 },
+      svgDimenSlider = { width: width, height: height / 6 },
+      svgDimenGraph = { width: width, height: (height * 4) / 6 },
+      svgDimen = { width: width, height: height };
 
     // parse the date / time
     let parseTime = d3.timeParse('%Y-%m-%d');
     let dates = total.map(d => parseTime(d.Date));
-
+    let domainRange = {
+      start: dates[0],
+      end: dates[dates.length - 1]
+    };
     let x = d3
       .scaleTime()
       .range([margins.left, svgDimen.width - margins.right])
-      .domain([dates[0], dates[dates.length - 1]])
+      .domain([domainRange.start, domainRange.end])
       .clamp(true);
-    let legend_text1_len = this.getTextWidth('Coca-Cola Company', 16, 'Arial');
+    let legend_text1_len = this.getTextWidth(companyName, 16, 'Arial');
     let legend_text2_len = this.getTextWidth('Industry', 16, 'Arial');
-
+    console.log(legend_text1_len);
     return (
       <svg className="areaChartSvg" width={svgDimen.width} height={svgDimen.height}>
         <g className="TopPane" transform={`translate(${margins.left}, ${height / 12})`}>
           <circle
             r="5"
-            cx={svgDimen.width - margins.left - legend_text2_len - legend_text1_len - 60}
-            cy="0"
+            cx={svgDimen.width - margins.left - legend_text2_len - legend_text1_len - 80}
+            cy="-2"
             fill="#de0730"
           />
           <text
-            x={svgDimen.width - margins.left - legend_text2_len - 40}
+            x={svgDimen.width - margins.left - legend_text2_len - 60}
             y="0"
-            alignmentBaseline="central"
+            dominantBaseline="middle"
             textAnchor="end"
             style={{ fontSize: 16, fill: '#bdbbbc' }}
           >
-            Coca-Cola Company
+            {companyName}
           </text>
-          <circle r="5" cx={svgDimen.width - margins.left - legend_text2_len - 20} cy="0" fill="#bdbbbc" />
+          <circle r="5" cx={svgDimen.width - margins.left - legend_text2_len - 40} cy="-2" fill="grey" />
           <text
-            x={svgDimen.width - margins.left}
+            x={svgDimen.width - margins.left - 20}
             y="0"
-            alignmentBaseline="central"
+            dominantBaseline="middle"
             textAnchor="end"
             style={{ fontSize: 16, fill: '#bdbbbc' }}
           >
@@ -490,7 +533,7 @@ class AreaChart extends Component {
           </text>
         </g>
         <g className="Chart" transform={`translate(0, ${height / 6})`}>
-          <Chart margins={margins} svgDimen={svgDimenGraph} partial={partial} />
+          <Chart margins={margins} svgDimen={svgDimenGraph} partial={partial} column={column} />
         </g>
         <h3>&nbsp;</h3>
         <g className="graphSliderGroup" transform={`translate(0, ${(height * 5) / 6})`}>
@@ -503,6 +546,7 @@ class AreaChart extends Component {
             svgDimen={svgDimenSlider}
             margins={margins}
             xScale={x}
+            domainRange={domainRange}
           />
         </g>
       </svg>

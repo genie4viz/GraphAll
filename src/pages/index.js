@@ -60,6 +60,11 @@ class Index extends Component {
             ))}
           </ul>
           <p>
+            <Link href="/stockpage">
+              <a>New Page</a>
+            </Link>
+          </p>
+          <p>
             <Link href="/horizon">
               <a>Horizon graph</a>
             </Link>

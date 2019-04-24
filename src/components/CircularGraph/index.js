@@ -14,7 +14,7 @@ class Graph extends Component {
 
     const svgDimensions = {
       width: Math.max(parentWidth, 200),
-      height: 350
+      height: 300
     };
 
     let width = svgDimensions.width;
@@ -27,7 +27,7 @@ class Graph extends Component {
   render() {
     const { svgDimensions } = this.state;
     const { security, data, year } = this.props;
-
+    // console.log(security, 'from circular');
     return (
       <Fragment>
         <svg width={svgDimensions.width} height={svgDimensions.height}>

@@ -8,65 +8,72 @@ const dataRange = [
   { title: 'ROIC', min: 0, max: 0.5, direction: 1 },
   { title: 'Return on equity', min: 0, max: 0.5, direction: 1 },
   { title: 'Revenue Growth', min: -30, max: 60, direction: 1 },
-  { title: 'N.t.b', min: 0, max: 4, direction: 0 },
+  { title: 'Debt-ratio', min: 0, max: 4, direction: 0 },
   { title: 'N.t.b', min: 0, max: 4, direction: 1 }
 ];
 
 class GaugeGraph extends Component {
   constructor(props) {
     super(props);
-    const { parentWidth, parentHeight, data } = this.props;
+    const { parentWidth, parentHeight, data , kind} = this.props;
+    console.log("change width");
+    console.log(parentWidth);
+    var tempwidth;
+    
+    if(parentWidth>210)
+        tempwidth=210;
+    if(parentWidth>250)
+        tempwidth=250;
+    if(parentWidth>350)
+        tempwidth=300;
+
+    
     this.state = {
-      data: data,
-      dataRange: dataRange,
-      width: 350,
-      height: 300
+      data: data,      
+      kind: kind,
+      ptwidth: parentWidth,
+      width: tempwidth,
+      height: tempwidth * 0.8
     };
   }
   componentDidMount() {}
   componentWillReceiveProps(nextProps) {
-    const { parentWidth, parentHeight, data } = nextProps;
+    const { parentWidth, parentHeight, data, kind } = nextProps;
+    console.log("change width");
+    console.log(parentWidth);
+    var tempwidth;
+    if(parentWidth>210)
+        tempwidth=210;
+    if(parentWidth>250)
+        tempwidth=250;
+    if(parentWidth>350)
+        tempwidth=300;
+   
     this.setState({
-      data: data,
-      dataRange: dataRange,
-      width: 350,
-      height: 300
+      data: data,      
+      kind: kind,
+      ptwidth: parentWidth,
+      width: tempwidth,
+      height: tempwidth * 0.8
     });
   }
 
   render() {
-    if (this.state.data.length == 0) {
+    if (!this.state.data) {
       return <Fragment>No Data</Fragment>;
     } else {
-      const { data } = this.state;
-
-      let jarr = [],
-        tarr = [],
-        i = 1;
-      JSON.parse(JSON.stringify(data), (key, value) => {
-        jarr.push({
-          label: key,
-          value: value
-        });
-        if (i % 3 == 0) {
-          tarr.push(jarr);
-          jarr = [];
-        }
-        i++;
-      });
+      const { data, kind, ptwidth, width, height } = this.state;
+      
       return (
         <Fragment>
-          {tarr.map((d, i) => {
-            return (
-              <GaugeChart
-                key={i}
-                data={d}
-                dataRange={dataRange[i]}
-                width={this.state.width}
-                height={this.state.height}
-              />
-            );
-          })}
+          <GaugeChart            
+            data={data}
+            dataRange={dataRange[kind]}
+            kind={kind}
+            ptwidth={ptwidth}
+            width={width}
+            height={height}
+          />            
         </Fragment>
       );
     }

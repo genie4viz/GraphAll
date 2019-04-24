@@ -15,7 +15,6 @@ class MyDocument extends Document {
       <html lang='nl'>
       <Head>
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
         <link rel="shortcut icon" href="/static/veb.png" />
         <link rel="stylesheet" href="/static/css/font-awesome.min.css"/>
       </Head>

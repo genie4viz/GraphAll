@@ -50,7 +50,7 @@ export default ChartComponent =>
 
       return (
         <div
-          style={{ width: '100%', height: '100%', minWidth: '384px', minHeight: '281px' }}
+          style={{ width: '100%', height: '100%', minWidth: '330px', minHeight: '281px' }}
           ref={el => {
             this.chartContainer = el;
           }}
