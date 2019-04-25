@@ -49,7 +49,7 @@ const RoundGraph = props => {
     const setFontSize = radius => {
       return radius <= 120 ? 11 : radius >= 180 ? 14 : 12;
     };
-    let radius = Math.min(width, height) / 1.9,
+    let radius = Math.min(width, height) / 1.6,
       spacing = 0.09;
 
     d3.select(roundRef.current)

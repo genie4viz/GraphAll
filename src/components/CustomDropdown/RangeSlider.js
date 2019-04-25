@@ -7,7 +7,7 @@ const RangeSlider = (props) => {
             rightHandlerRef = useRef(),
             fillbarRef = useRef();
 
-    const   {width, height, range} = props,
+    const   {width, height, index, range} = props,
             margins = {left: 20, top: 10, right: 20, bottom: 10},
             slider_w = width - margins.left - margins.right,            
             RangeBar = <rect rx="5" ry="5" y="0" width={slider_w} height="5" fill="grey"/>,
@@ -37,16 +37,16 @@ const RangeSlider = (props) => {
         controlHandlers();
     });
 
-    const controlHandlers = () => {
+    const controlHandlers = () => {        
         let trueMouseValue;
         let drag = d3
             .drag()
             .on('start', dragstart)
             .on('drag', draged);
 
-        d3.select('.sliderBar').call(drag);
+        d3.select('.sliderBar' + index).call(drag);
         function dragstart() {
-            if (overedObj == 'leftHandler' || overedObj == 'rightHandler') {
+            if (overedObj == 'leftHandler' + index || overedObj == 'rightHandler' + index) {
                 trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
             }
         }
@@ -57,7 +57,7 @@ const RangeSlider = (props) => {
             if(get_x(translateLeft) == get_x(translateRight)){
                 return;
             }else{
-                if (overedObj == 'rightHandler') {
+                if (overedObj == 'rightHandler' + index ) {
                     trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);                
                     d3.select(rightHandlerRef.current).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 2.5)');
                     d3.select(rightHandlerRef.current)
@@ -66,7 +66,7 @@ const RangeSlider = (props) => {
                         .attr('dy', 17)
                         .text(trueMouseValue);
                 }
-                if (overedObj == 'leftHandler') {
+                if (overedObj == 'leftHandler' + index ) {
                     trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);                
                     d3.select(leftHandlerRef.current).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 2.5)');
                     d3.select(leftHandlerRef.current)
@@ -113,15 +113,15 @@ const RangeSlider = (props) => {
             .style('d', 'none');
     }
     return (
-        <svg className="rangeSlider" width={width} height={height}>{console.log('render')}
-            <g className="XAxisArea" ref={axisRef} transform={`translate(${margins.left}, 5)`}/>            
-            <g className="sliderBar" onMouseOver={event => onMouseOver(event)} transform={`translate(${margins.left}, ${margins.top})`}>
+        <svg className={"rangeSlider" + index} width={width} height={height}>
+            <g className={"XAxisArea" + index} ref={axisRef} transform={`translate(${margins.left}, 5)`}/>            
+            <g className={"sliderBar" + index} onMouseOver={event => onMouseOver(event)} transform={`translate(${margins.left}, ${margins.top})`}>
                 {RangeBar}
                 {fillBar}
-                <g className="leftHandler" ref={leftHandlerRef} transform={`translate(0, 2.5)`}>
+                <g className={"leftHandler" + index} ref={leftHandlerRef} transform={`translate(0, 2.5)`}>
                     {circle}{text}
                 </g>
-                <g className="rightHandler" ref={rightHandlerRef} transform={`translate(${slider_w}, 2.5)`}>
+                <g className={"rightHandler" + index} ref={rightHandlerRef} transform={`translate(${slider_w}, 2.5)`}>
                     {circle}{text}
                 </g>
             </g>

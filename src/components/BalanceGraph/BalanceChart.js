@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SingleSlider from './SingleSlider';
+import SingleSlider from '../SingleSlider';
 import * as d3 from 'd3';
 
 class Chart extends Component {
