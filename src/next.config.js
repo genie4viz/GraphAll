@@ -1,7 +1,16 @@
 const withSass = require('@zeit/next-sass');
 
 module.exports = withSass({
-	
+	    debug: true,
+    entry: [ './sdocs.js' ],
+    output: {
+        filename: './[name].bundle.js'
+    },
+    module: {
+      loaders: [
+        { test: /\.css$/, loader: "style-loader!css-loader" },
+      ],
+    },
   serverRuntimeConfig: {
     // Will only be available on the server side
     mySecret: 'mySecret'

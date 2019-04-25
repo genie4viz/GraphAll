@@ -52,18 +52,14 @@ class Index extends Component {
         <div className="content">
           <ul>
             {allSecurities.map(s => (
-              <li>
+              <li key={s.id}>
                 <Link key={s.id} href={`/security?id=${s.id}`} as={`/security/${s.id}`}>
                   <a>{s.name}</a>
                 </Link>
               </li>
             ))}
           </ul>
-          <p>
-            <Link href="/stockpage">
-              <a>New Page</a>
-            </Link>
-          </p>
+ 
           <p>
             <Link href="/horizon">
               <a>Horizon graph</a>
@@ -97,6 +93,11 @@ class Index extends Component {
           <p>
             <Link href="/area">
               <a>Area graph</a>
+            </Link>
+          </p>
+          <p>
+            <Link href="/security-search" prefetch={true}>
+              <a>Security search</a>
             </Link>
           </p>
         </div>

@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 
 const HorizonGraph = (props) => {
   
-  const step = 39, overlap = 5, height = props.data.length * 50,
-        margin = { top: 30, right: 10, bottom: 0, left: 10 },        
+  const step = 49, overlap = 5, height = props.data.length * 62,
+        margin = { top: 20, right: 10, bottom: 0, left: 10 },        
         color = i => d3['schemePiYG'][overlap * 2 + 1][i + (i >= 0) + overlap];        
   
   const [selected, setSelected] = useState(false);
@@ -50,21 +50,24 @@ const HorizonGraph = (props) => {
           bisectDate = d3.bisector(d => parseTime(d.date)).left;
       
       var x0 = x.invert(d3.mouse(svgNode)[0]);
-      var is, d0, d1, d;
+      var is, d0, d1, d, tmp_ptText, ptText;
       for(var p = 0; p < props.data.length; p++){
         is = bisectDate(props.data[p].globalQuotes, x0, 1),
         d0 = props.data[p].globalQuotes[is - 1],
         d1 = props.data[p].globalQuotes[is],
-        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0,        
+        tmp_ptText=(((d.close-props.data[p].globalQuotes[0].close)/props.data[p].globalQuotes[0].close)*100).toFixed(0),
+        ptText = tmp_ptText > 0 ? "+" + tmp_ptText : tmp_ptText;
         d3.selectAll('.point-text')
           .filter('.text' + p)
-          .text(d.close);
+          .attr('text-anchor', d3.mouse(svgNode)[0] > props.parentWidth - 50 ? 'end' : 'start')
+          .text(ptText + '%');
       }
       d3.selectAll('.point-text')        
-        .attr('x', x_pos);
+        .attr('x', x_pos + 1);
         
     });
-  }, []);
+  }, [props]);
   
   const drawHorizon = () => {    
     setMax(d3.max(props.data, d => d3.max(d.globalQuotes, d => Math.abs(d.close))));
@@ -102,7 +105,7 @@ const HorizonGraph = (props) => {
       );
       let e_g = d3.select(drawAreaRef.current)
         .append("g")
-        .attr("transform", "translate(0, " + (i * (step + 1) + margin.top) + ")");
+        .attr("transform", "translate(0, " + (i * (step + 10) + margin.top) + ")");
       e_g        
         .append("clipPath")
         .attr("id", "clip" + i)
@@ -131,14 +134,18 @@ const HorizonGraph = (props) => {
         .append('text')             
         .attr('class', 'point-text text' + i)
         .attr('x', 4)
-        .attr('y', step / 2)
-        .attr('dy', '0.35em');
+        .attr('y', step / 3)
+        .style('font-size', '11pt')
+        .attr('dy', '0.25em');
 
       e_g
         .append('text')
         .attr('x', 4)
         .attr('y', step / 2)
-        .attr('dy', '0.35em')
+        .attr('dy', '1.5em')
+        .style('font-weight', 'bold')
+        .style('fill', 'grey')
+        .style('font-size', '10pt')
         .text(d.name + ' ' + d.ticker);
       
     });
@@ -151,7 +158,6 @@ const HorizonGraph = (props) => {
   
   return (
     <>      
-      <p>X position: {selected}</p>
       <svg width={props.parentWidth} height={height} ref={svgRef} >        
         <g ref={drawAreaRef}></g>        
       </svg>

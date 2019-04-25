@@ -6,17 +6,8 @@
 import D3blackbox from './D3blackbox';
 import * as d3 from 'd3';
 
-const CircularGraph = D3blackbox(function (anchor, props, state) {
-  const {
-    width,
-    height,
-    security,
-    t,
-    d,
-    b,
-    g,
-    v
-  } = props;
+const CircularGraph = D3blackbox(function(anchor, props, state) {
+  const { width, height, security, t, d, b, g, v } = props;
 
   var colors = {
     red: '#f45b63',
@@ -35,7 +26,8 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
   var radius = Math.min(width, height) / 1.9,
     spacing = 0.09;
 
-  var dataUpdated = [{
+  var dataUpdated = [
+    {
       index: 0.7,
       text: 'Dividend',
       value: d / 100,
@@ -70,13 +62,13 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
   var arcBody = d3
     .arc()
     .startAngle(0)
-    .endAngle(function (d) {
+    .endAngle(function(d) {
       return d.value * 2 * Math.PI;
     })
-    .innerRadius(function (d) {
+    .innerRadius(function(d) {
       return d.index * radius;
     })
-    .outerRadius(function (d) {
+    .outerRadius(function(d) {
       return (d.index + spacing) * radius;
     })
     .cornerRadius(2);
@@ -94,10 +86,10 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
 
     var line = d3
       .line()
-      .x(function (d, i) {
+      .x(function(d, i) {
         return x(i);
       })
-      .y(function (d, i) {
+      .y(function(d, i) {
         return y(d);
       });
 
@@ -137,7 +129,7 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
 
   var field = svg
     .selectAll('g')
-    .data(dataUpdated, function (d) {
+    .data(dataUpdated, function(d) {
       return d.value;
     })
     .enter()
@@ -146,7 +138,7 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
   var arcs = field
     .append('path')
     .attr('class', 'arc-body')
-    .style('fill', function (d) {
+    .style('fill', function(d) {
       return setColor(t);
     });
 
@@ -155,50 +147,47 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
     .attr('dy', '-.15em')
     .attr('dx', '-0.75em')
     .style('text-anchor', 'middle')
-    .attr('transform', function (d) {
+    .attr('transform', function(d) {
       return 'translate(' + [0, -d.index * radius] + ')';
     })
-    .style('font-size', function () {
+    .style('font-size', function() {
       return setFontSize(radius);
     })
     .style('font-weight', 'bold')
     .style('fill', setColor(t))
-    .text(function (d) {
+    .text(function(d) {
       return d.text.split('')[0];
     });
 
   arcs
     .style('stroke', '#fff')
     .style('stroke-width', 2)
-    .on('click', function(d){
-      arcs.style('fill', 'grey');
-      console.log(d3.select(this), 'what')
-      d3.select(this).style('fill', '#ff0000')
-    })
-    .on('mouseover', function (d) {
+    .on('mouseover', function(d) {
       let position = anchor.current.getBoundingClientRect();
-      console.log(d3.select(this), 'what is')
       d3.select(this).style('stroke-width', 0);
 
-      // tooltip
-      //   .html(
-      //     `<b>${d.text}</b><br/>
-      //     <div class='sparkGraph sparkGraph-${security.id}'></div>
-      //     ${d.allValues.join(' - ')}
-      //     `
-      //   )        
-      //   .style('left', `${position.x + position.width / 2 - 140}px`)
-      //   .style('top', `${position.y + position.height / 2 - 40}px`)
-      //   .transition()
-      //   .duration(200)
-      //   .style('opacity', 0.9);
-      //   sparkline(`.sparkGraph-${security.id}`, d.allValues);
+      tooltip
+        .html(
+          `<b>${d.text}</b><br/>
+          <div class='sparkGraph sparkGraph-${security.id}'></div>
+          ${d.allValues.join(' - ')}
+          `
+        )
+        // .style("left", `${d3.event.pageX - 160}px`)
+        // .style("top", `${d3.event.pageY - 80}px`)
+        .style('left', `${position.x + position.width / 2 - 140}px`)
+        .style('top', `${position.y + position.height / 2 - 40}px`)
+        .transition()
+        .duration(200)
+        .style('opacity', 0.9);
+
+      sparkline(`.sparkGraph-${security.id}`, d.allValues);
     })
-    .on('mouseout', function (d) {
-      // tooltip
-      //   .transition()
-      //   .duration(500)
-      //   .style('opacity', 0);
+    .on('mouseout', function(d) {
+      tooltip
+        .transition()
+        .duration(500)
+        .style('opacity', 0);
       d3.select(this).style('stroke-width', 2);
     })
     .transition()
@@ -206,9 +195,9 @@ const CircularGraph = D3blackbox(function (anchor, props, state) {
     .attrTween('d', arcTween(arcBody));
 
   function arcTween(arc) {
-    return function (d) {
+    return function(d) {
       var i = d3.interpolateNumber(0, d.value);
-      return function (t) {
+      return function(t) {
         d.value = i(t);
         return arc(d);
       };

@@ -285,7 +285,7 @@ class Security extends Component {
                     </div>
                     <div className="columns" style={{ height: '50px', fontSize: 'small' }}>
                       <div className="column is-3" style={{ padding: 'inherit' }}>
-                        <img src="../static/svg/ConsumerNonDurables.svg" style={{ height: '34'}}/>
+                        <img src="../static/svg/ConsumerNonDurables.svg" style={{ height: '34px' }} />
                       </div>
                       <div className="column is-9" style={{ padding: 'inherit' }}>
                         consumer <br />
@@ -401,8 +401,12 @@ class Security extends Component {
             Historic performance
           </h3>
           <hr />
-          {security.top5IndustryHistory ? (
-            <HorizonGraph data={[security, ...security.top5IndustryHistory.map(t => t.security)]} />
+          {security.globalQuotes ? (
+            security.top5IndustryHistory ? (
+              <HorizonGraph data={[security, ...security.top5IndustryHistory.map(t => t.security)]} />
+            ) : (
+              <p>No Data</p>
+            )
           ) : (
             <p>No Data</p>
           )}

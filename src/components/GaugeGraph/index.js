@@ -16,8 +16,7 @@ class GaugeGraph extends Component {
   constructor(props) {
     super(props);
     const { parentWidth, parentHeight, data , kind} = this.props;
-    console.log("change width");
-    console.log(parentWidth);
+    
     var tempwidth;
     
     if(parentWidth>210)
@@ -39,8 +38,7 @@ class GaugeGraph extends Component {
   componentDidMount() {}
   componentWillReceiveProps(nextProps) {
     const { parentWidth, parentHeight, data, kind } = nextProps;
-    console.log("change width");
-    console.log(parentWidth);
+    
     var tempwidth;
     if(parentWidth>210)
         tempwidth=210;

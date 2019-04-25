@@ -27,7 +27,7 @@ class Graph extends Component {
   render() {
     const { svgDimensions } = this.state;
     const { security, data, year } = this.props;
-    // console.log(security, 'from circular');
+
     return (
       <Fragment>
         <svg width={svgDimensions.width} height={svgDimensions.height}>
