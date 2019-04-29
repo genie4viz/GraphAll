@@ -48,6 +48,8 @@ const securityTemp = {
   v: 70
 };
 const items = ['All values', 'Dividend', 'Balance', 'Growth', 'Value'];
+
+
 const years = [2016,2017,2018,2019];
 
 // you will export this query because when you create the mutation,
@@ -73,8 +75,10 @@ const SecuritySearch = () => {
   const { securityFilterYear, setSecurityFilterYear } = useContext(AppContext);
   const [securityFilterTextInput, setSecurityFilterTextInput] = useState(securityFilterText);
   const [securityFilterYearInput, setSecurityFilterYearInput] = useState(securityFilterYear);
-
+    
   const inputEl = useRef();
+
+  
   useEffect(() => {
     inputEl.current && inputEl.current.focus && inputEl.current.focus();
   });
@@ -101,6 +105,10 @@ const SecuritySearch = () => {
     setInputIsLoading(false);
   };
 
+  const handleCheckBoxStates = (index, checkStates) => {
+    console.log(index, 'from parent')
+    console.log(checkStates, 'from parent')
+  }
   // useEffect(() => {
   //   if (process.browser && currentSecurities.length > 0) {
   //     const unsubscribe = subscribeToSecurities(currentSecurities.map(s => s.id));
@@ -152,18 +160,18 @@ const SecuritySearch = () => {
           </h3>
         </div>
       </div>
-      <div className="columns is-mobile" style={{ display: 'flex', flexFlow: 'wrap', justifyContent: 'space-around' }}>
+      <div className="columns is-mobile" style={{ display: 'flex', flexFlow: 'wrap', justifyContent: 'space-around' }}>        
         <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={0} title="All areas" items={items} idx={0} hasSlider={true}/>
+          <CustomDropdown key={0} title="Large caps" items={[]} idx={0} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false} />
         </div>
         <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={1} title="Large caps" items={items} idx={1} hasSlider={true} />
+          <CustomDropdown key={1} title="All values" items={items} idx={1} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false}/>
         </div>
         <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={2} title="All values" items={items} idx={2} hasSlider={true}/>
+          <CustomDropdown key={2} title="All areas" items={items} idx={2} handleCheckBoxStates={handleCheckBoxStates} hasSlider={true}/>
         </div>
         <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={3} title="All sectors" items={items} idx={3} hasSlider={true}/>
+          <CustomDropdown key={3} title="All sectors" items={[]} idx={3} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false}/>
         </div>
     
         <div className="column">
@@ -279,5 +287,6 @@ function loadMoreSecurities(securities, fetchMore) {
     }
   });
 }
+
 
 export default SecuritySearch;

@@ -10,13 +10,13 @@ const RangeSlider = (props) => {
     const   {width, height, index, range} = props,
             margins = {left: 20, top: 10, right: 20, bottom: 10},
             slider_w = width - margins.left - margins.right,            
-            RangeBar = <rect rx="5" ry="5" y="0" width={slider_w} height="5" fill="grey"/>,
-            fillBar = <rect ref={fillbarRef} x={0} y="0" width={slider_w} height={5} fill="#de0730"/>,              
+            RangeBar = <rect rx="5" ry="5" y="0" width={slider_w} height="5" fill="grey"/>,            
             circle = <circle r="5px" fill="#de0730" stroke="black"/>,
-            text = <text style={{fontSize: 12, fill: 'grey', fontWeight: '300' }} />;
+            text = <text style={{fontSize: 12, fill: 'grey', fontWeight: '300' }} />,
+            tick_w = slider_w / (20);
 
-    let startRange = range[0],
-        endRange = range[range.length - 1];
+    let startRange = 0,
+        endRange = 100;
     let xScale = d3
         .scaleLinear()
         .domain([startRange, endRange])
@@ -24,9 +24,11 @@ const RangeSlider = (props) => {
         .clamp(true);
     
     const   [overedObj, setOveredObj] = useState(null);
+    const   [leftHandlerPos, setLeftHandlerPos] = useState(0);
+    const   [rightHandlerPos, setRightHandlerPos] = useState(slider_w);
 
     const onMouseOver = event => {
-        setOveredObj(event.target.parentNode.className.baseVal);
+        setOveredObj(event.target.parentNode.className.baseVal);        
     }
 
     useEffect(() => {
@@ -35,57 +37,50 @@ const RangeSlider = (props) => {
 
     useEffect(() => {
         controlHandlers();
+        
     });
 
-    const controlHandlers = () => {        
-        let trueMouseValue;
+    const controlHandlers = () => {
+        let trueMouseValue, mouseValue;
         let drag = d3
             .drag()
             .on('start', dragstart)
             .on('drag', draged);
 
         d3.select('.sliderBar' + index).call(drag);
-        function dragstart() {
+        function dragstart() {            
             if (overedObj == 'leftHandler' + index || overedObj == 'rightHandler' + index) {
                 trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);
             }
         }
-        function draged() {
-            let translateLeft = d3.select(leftHandlerRef.current).attr("transform");
-            let translateRight = d3.select(rightHandlerRef.current).attr("transform");
-            // console.log(get_x(translateLeft) + ":" + get_x(translateRight), ' left : right ')
-            if(get_x(translateLeft) == get_x(translateRight)){
-                return;
-            }else{
-                if (overedObj == 'rightHandler' + index ) {
-                    trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);                
-                    d3.select(rightHandlerRef.current).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 2.5)');
-                    d3.select(rightHandlerRef.current)
-                        .select('text')
-                        .attr('text-anchor', 'middle')
-                        .attr('dy', 17)
-                        .text(trueMouseValue);
-                }
-                if (overedObj == 'leftHandler' + index ) {
-                    trueMouseValue = getTrueMouseValue(d3.mouse(this)[0]);                
-                    d3.select(leftHandlerRef.current).attr('transform', 'translate(' + xScale(trueMouseValue) + ', 2.5)');
-                    d3.select(leftHandlerRef.current)
-                        .select('text')
-                        .attr('text-anchor', 'middle')
-                        .attr('dy', 17)
-                        .text(trueMouseValue);                
-                }
+        function draged() {            
+            mouseValue = d3.mouse(this)[0];
+            trueMouseValue = getTrueMouseValue(mouseValue);            
+            if (overedObj == 'rightHandler' + index ) {
+                if(Math.floor(mouseValue - leftHandlerPos) < Math.floor(tick_w)){                    
+                    return;
+                }                
+                setRightHandlerPos(xScale(trueMouseValue));
+                d3.select(rightHandlerRef.current)
+                    .select('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', 17)
+                    .text(trueMouseValue);
             }
-            d3.select(fillbarRef.current)
-                .attr('x', get_x(translateLeft))                
-                .attr('width', get_x(translateRight) - get_x(translateLeft))
+            if (overedObj == 'leftHandler' + index ) {
+                if(Math.floor(rightHandlerPos - mouseValue) < Math.floor(tick_w)){
+                    return;
+                }
+                setLeftHandlerPos(xScale(trueMouseValue));                
+                d3.select(leftHandlerRef.current)
+                    .select('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', 17)
+                    .text(trueMouseValue);                
+            }
         }
         function getTrueMouseValue(mouseValue) {
             return Math.round(xScale.invert(mouseValue));
-        }
-        function get_x(translate){
-            translate = translate.substr(10, translate.length - 2);
-            return translate.split(',')[0];
         }
     }
     const drawAxis = () => {        
@@ -95,7 +90,7 @@ const RangeSlider = (props) => {
                 d3
                 .axisBottom()
                 .scale(xScale)
-                .ticks(range.length)
+                .ticks(100)
                 .tickFormat(d3.format(''))
             )
             .selectAll('text')
@@ -117,11 +112,11 @@ const RangeSlider = (props) => {
             <g className={"XAxisArea" + index} ref={axisRef} transform={`translate(${margins.left}, 5)`}/>            
             <g className={"sliderBar" + index} onMouseOver={event => onMouseOver(event)} transform={`translate(${margins.left}, ${margins.top})`}>
                 {RangeBar}
-                {fillBar}
-                <g className={"leftHandler" + index} ref={leftHandlerRef} transform={`translate(0, 2.5)`}>
+                <rect ref={fillbarRef} x={leftHandlerPos} y={0} width={rightHandlerPos - leftHandlerPos} height={5} fill="#de0730"/>                
+                <g className={"leftHandler" + index} ref={leftHandlerRef} transform={`translate(${leftHandlerPos}, 2.5)`}>
                     {circle}{text}
                 </g>
-                <g className={"rightHandler" + index} ref={rightHandlerRef} transform={`translate(${slider_w}, 2.5)`}>
+                <g className={"rightHandler" + index} ref={rightHandlerRef} transform={`translate(${rightHandlerPos}, 2.5)`}>
                     {circle}{text}
                 </g>
             </g>
