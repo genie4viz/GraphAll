@@ -182,7 +182,7 @@ class Handle extends Component {
     render() {
       const { width, height, years } = this.state;
       const { onChangeYear } = this.props;
-      const margins = { top: 20, right: 55, bottom: 20, left: 45 },
+      const margins = { top: 20, right: 25, bottom: 20, left: 15 },
         svgDimen = { width: width - margins.left - margins.right, height: height };
   
       const RangeBar = (
@@ -205,7 +205,7 @@ class Handle extends Component {
         .clamp(true);
   
       return (
-        <svg className="SingleSliderSvg" width={svgDimen.width + 60} height={svgDimen.height}>
+        <svg className="SingleSliderSvg" width={svgDimen.width + 20} height={svgDimen.height}>
           <g
             className="SingleSliderSvg"
             width={svgDimen.width}

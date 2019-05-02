@@ -52,10 +52,10 @@ const HorizonGraph = (props) => {
       var x0 = x.invert(d3.mouse(svgNode)[0]);
       var is, d0, d1, d, tmp_ptText, ptText;
       for(var p = 0; p < props.data.length; p++){
-        is = bisectDate(props.data[p].globalQuotes, x0, 1),
-        d0 = props.data[p].globalQuotes[is - 1],
-        d1 = props.data[p].globalQuotes[is],
-        d = x0 - d0.date > d1.date - x0 ? d1 : d0,        
+        is = bisectDate(props.data[p].globalQuotes, x0, 1);
+        d0 = props.data[p].globalQuotes[is - 1];
+        d1 = props.data[p].globalQuotes[is] ? props.data[p].globalQuotes[is] : d0;        
+        d = (x0 - d0.date) > (d1.date - x0) ? d1 : d0;
         tmp_ptText=(((d.close-props.data[p].globalQuotes[0].close)/props.data[p].globalQuotes[0].close)*100).toFixed(0),
         ptText = tmp_ptText > 0 ? "+" + tmp_ptText : tmp_ptText;
         d3.selectAll('.point-text')

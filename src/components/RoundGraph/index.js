@@ -3,43 +3,40 @@ import ResponsiveWrapper from './ResponsiveWrapper';
 import * as d3 from 'd3';
 
 const RoundGraph = props => {
-  const { security, index } = props;
+  const { params, index, showGraphCase } = props;
+  
   let dataUpdated = [
     {
       index: 0.7,
       text: 'Dividend',
-      value: security.d / 100,
-      allValues: [security.d, 25, 50, 75]
+      value: params.Dividend ? (params.Dividend / 100) : 0
     },
     {
       index: 0.6,
       text: 'Balans',
-      value: security.b / 100,
-      allValues: [security.b, 25, 50, 75]
+      value: params.Balance ? (params.Balance) / 100 : 0
     },
     {
       index: 0.5,
       text: 'Growth',
-      value: security.g / 100,
-      allValues: [security.g, 25, 50, 75]
+      value: params.Growth ? (params.Growth / 100) : 0
     },
     {
       index: 0.4,
-      text: 'Valuation',
-      value: security.v / 100,
-      allValues: [security.v, 25, 50, 75]
+      text: 'Value',
+      value: params.Value ? (params.Value / 100) : 0
     }
   ];
   let width = props.parentWidth,
-    height = props.parentWidth * 0.9;
+    height = props.parentWidth * 0.8;
 
   const roundRef = useRef();
   const lineRef = useRef();
 
   useEffect(() => {
     drawRound();
-    drawLine();
-  }, [props]);
+    // drawLine();
+  }, [params, index, showGraphCase]);
 
   const drawRound = () => {
     let colors = { red: '#f45b63', orange: '#f49d73', green: '#72c14a' };
@@ -70,25 +67,48 @@ const RoundGraph = props => {
       .data(dataUpdated, d => d.value)
       .enter()
       .append('g');
-
+    
+    let total = params.Total ? params.Total : 0;
+    //add score
+    let txt_score = field
+      .append('text')
+      .style('font-weight', 'bold')
+      .style('font-size', '22pt')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.3em')
+      .attr('fill', setColor(total))
+      .text(total);
     var arcs = field
       .append('path')
       .attr('class', 'arc-body')
-      .style('fill', () => setColor(security.t));
+      .style('fill', () => setColor(total));
 
     arcs
+      .attr('opacity', (d, i) => (showGraphCase.length > 0 ? (showGraphCase[i + 1] ? 1 : 0) : 1))
       .style('stroke', '#fff')
       .style('stroke-width', 2)
       .on('click', function(d) {
         arcs.style('fill', 'grey');
-        d3.select(this).style('fill', setColor(security.t));
+        d3.select(this).style('fill', setColor(total));
         d3.select('.text-all' + index).attr('opacity', 1);
       })
-      .on('mouseover', function(d) {
+      .on('mouseover', function(d) {        
+        if(d3.select(this).attr('opacity') == 0) return;
+        if(d.value == 0) return;
         d3.select(this).style('stroke-width', 0);
+        txt_score
+          .attr('dy', '0.3em')
+          .attr('fill', setColor(d.value * 100))
+          .text(Math.floor(d.value * 100));
       })
       .on('mouseout', function(d) {
+        if(d3.select(this).attr('opacity') == 0) return;
+        if(d.value == 0) return;
         d3.select(this).style('stroke-width', 2);
+        txt_score
+          .attr('dy', '0.3em')
+          .attr('fill', setColor(total))
+          .text(total);
       })
       .transition()
       .duration(750)
@@ -107,10 +127,24 @@ const RoundGraph = props => {
       .text('All')
       .style('cursor', 'pointer')
       .on('click', function() {
-        arcs.style('fill', setColor(security.t));
+        arcs.style('fill', setColor(total));
         d3.select(this).attr('opacity', 0);
+        txt_score
+          .attr('dy', '0.3em')
+          .attr('fill', setColor(total))
+          .text(total);
       });
-
+    field
+      .append('text')
+      .attr('dy', '-.15em')
+      .attr('dx', '-0.75em')
+      .style('text-anchor', 'middle')
+      .attr('transform', d => 'translate(' + [0, -d.index * radius] + ')')
+      .style('font-size', setFontSize(radius))
+      .style('font-weight', 'bold')
+      .style('fill', setColor(total))
+      .text(d => d.text.split('')[0])
+      
     function arcTween(arc) {
       return function(d) {
         var i = d3.interpolateNumber(0, d.value);
@@ -122,7 +156,7 @@ const RoundGraph = props => {
     }
   };
   const drawLine = () => {
-    const { security } = props;
+    const { params } = props;
     let w = (Math.min(width, height) / 1.9) * 0.8 * Math.cos((Math.PI / 180) * 45); // 0.4 from small radius
     d3.select(lineRef.current)
       .selectAll('*')
@@ -193,16 +227,7 @@ const RoundGraph = props => {
       .attr('fill', 'none')
       .attr('stroke', 'green')
       .attr('stroke-width', 3)
-      .attr('d', line);
-    //add percent
-    field
-      .append('text')
-      .attr('transform', 'translate(' + w / 2 + ',' + w + ')')
-      .style('fill', 'green')
-      .style('font-weight', 'bold')
-      .style('font-size', 18)
-      .attr('text-anchor', 'middle')
-      .text('72%');
+      .attr('d', line);    
 
     field
       .on('mousemove', function() {
@@ -254,7 +279,7 @@ const RoundGraph = props => {
   return (
     <svg className={'roundChart' + index} width={width} height={height}>
       <g className={'round' + index} ref={roundRef} transform={`translate(${width / 2}, ${height / 2})`} />
-      <g className={'line' + index} ref={lineRef} transform={`translate(${width / 2}, ${height / 2})`} />
+      <g className={'line' + index} ref={lineRef} transform={`translate(${width / 2}, ${height / 2})`} />      
     </svg>
   );
 };

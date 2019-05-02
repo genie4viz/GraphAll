@@ -266,7 +266,7 @@ class Axis extends React.Component {
       .attr('alignment-baseline', 'central')
       .attr('opacity', 0)
       .style('font-size', '11pt')
-      .text(d => d.DividendPayoutRatio > 100 ? 100 : Math.floor(d.DividendPayoutRatio));
+      .text(d => d.DividendPayoutRatio > 100 ? 100 + '%' : Math.floor(d.DividendPayoutRatio) + '%');
     stock
       .select('.text-percents')
       .selectAll('text')

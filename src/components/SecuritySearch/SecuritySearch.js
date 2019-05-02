@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import AppContext from '../AppContext';
 
-import RoundGraph from '../RoundGraph';
+import LocalPortfolio from '../LocalPortfolio';
 import CustomDropdown from '../CustomDropdown';
 import ErrorMessage from '../ErrorMessage';
 import SingleSlider from '../SingleSlider';
-
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,41 +15,22 @@ library.add(faSpinner);
 library.add(faSearch);
 
 import Link from 'next/link';
-import { Query } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import classNames from 'classnames';
 
 const SECURITIES_PER_PAGE = 10;
-const securityTemp = {
-  b: 70,
-  currency: 'EUR',
-  d: 4,
-  g: 3,
-  id: 'bjo5t',
-  isIdea: true,
-  liveData: {
-    changePercent: -1.0183,
-    cumulativeVolume: 33,
-    dateTime: '2019-03-11T15:22:07.766Z',
-    dayHigh: 0.972,
-    dayLow: 0.972,
-    last: 0.972,
-    netChange: -0.01,
-    open: 0.972,
-    totalTurnoverCurrency: 32.076
-  },
-  name: '11 88 0 Solutions',
-  sector: 'CommercialServices',
-  t: 12,
-  ticker: 'TGT',
-  v: 70
-};
-const items = ['All values', 'Dividend', 'Balance', 'Growth', 'Value'];
 
-
-const years = [2016,2017,2018,2019];
+const items = [
+  {id: 0, label: 'All values', value: true},
+  {id: 1, label: 'Dividend', value: true},
+  {id: 2, label: 'Balance', value: true},
+  {id: 3, label: 'Growth', value: true},
+  {id: 4, label: 'Value', value: true}
+];
+const years = [2013, 2014, 2015, 2016, 2017, 2018];
 
 // you will export this query because when you create the mutation,
 // you can refetch this query when doing mutations like add to portfolio
@@ -58,13 +38,22 @@ export const SECURITIES_QUERY = gql`
   query Securities($filter: SecurityFilterInput, $offset: Int, $limit: Int) {
     securities(filter: $filter, offset: $offset, limit: $limit) @connection(key: "security", filter: ["filter"]) {
       id
+      name      
+      sector      
+      calculatedCircular{
+          Year
+          Total
+          Dividend
+          Balance
+          Growth
+          Value
+      }
+      isInLocalPortfolio @client
+    }
+
+    allSectors {
+      code
       name
-      type
-      t
-      d
-      b
-      g
-      v
     }
   }
 `;
@@ -75,10 +64,10 @@ const SecuritySearch = () => {
   const { securityFilterYear, setSecurityFilterYear } = useContext(AppContext);
   const [securityFilterTextInput, setSecurityFilterTextInput] = useState(securityFilterText);
   const [securityFilterYearInput, setSecurityFilterYearInput] = useState(securityFilterYear);
-    
-  const inputEl = useRef();
-
+  const [showCase, setShowCase] = useState([true, true, true, true, true]);//0: all values, 1: dividend, 2: balance, 3: growth, 4: value
+  const [currentYear, setCurrentYear] = useState(years[years.length - 1]);
   
+  const inputEl = useRef();
   useEffect(() => {
     inputEl.current && inputEl.current.focus && inputEl.current.focus();
   });
@@ -105,9 +94,25 @@ const SecuritySearch = () => {
     setInputIsLoading(false);
   };
 
-  const handleCheckBoxStates = (index, checkStates) => {
-    console.log(index, 'from parent')
-    console.log(checkStates, 'from parent')
+  //get check states from CustomDropDownList
+  const getCustomDropDownState = (index, check_states) => {    
+    let cases = [];
+    for(let i = 0; i < check_states.length; i++){
+      if(check_states[i].value){
+        cases.push(true)
+      }else{
+        cases.push(false)
+      }
+    }
+    
+    setShowCase(cases);
+  }
+
+  //get current year of slider
+  const handleChangeYear = year => {
+    setCurrentYear(year)
+    // curYearRef.current = curYear;
+    // console.log(curYearRef.current, 'slided year')
   }
   // useEffect(() => {
   //   if (process.browser && currentSecurities.length > 0) {
@@ -155,34 +160,12 @@ const SecuritySearch = () => {
 
       <div className="columns is-mobile">
         <div className="column">
-          <h3 class="subtitle is-6 has-text-centered" style={{ height: '20px', color: '#a9a9a9' }}>
+          <h3 className="subtitle is-6 has-text-centered" style={{ height: '20px', color: '#a9a9a9' }}>
             All stocks show an average rating score based on Dividend, Balance, Growth and Value.
           </h3>
         </div>
       </div>
-      <div className="columns is-mobile" style={{ display: 'flex', flexFlow: 'wrap', justifyContent: 'space-around' }}>        
-        <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={0} title="Large caps" items={[]} idx={0} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false} />
-        </div>
-        <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={1} title="All values" items={items} idx={1} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false}/>
-        </div>
-        <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={2} title="All areas" items={items} idx={2} handleCheckBoxStates={handleCheckBoxStates} hasSlider={true}/>
-        </div>
-        <div className="column" style={{ paddingTop: '25px' }}>
-          <CustomDropdown key={3} title="All sectors" items={[]} idx={3} handleCheckBoxStates={handleCheckBoxStates} hasSlider={false}/>
-        </div>
-    
-        <div className="column">
-          <SingleSlider
-            // onChangeYear={this.handleChangeYear}
-            width={400}
-            height={70}
-            years={years}
-          />
-        </div>
-      </div>
+
       <Query
         query={SECURITIES_QUERY}
         variables={{
@@ -195,7 +178,7 @@ const SecuritySearch = () => {
           limit: SECURITIES_PER_PAGE
         }}
       >
-        {({ loading, error, data: { securities }, fetchMore }) => {
+        {({ loading, error, data: { securities, allSectors }, fetchMore }) => {
           if (error) return <ErrorMessage message="Error loading posts." />;
           if (loading)
             return (
@@ -203,60 +186,56 @@ const SecuritySearch = () => {
                 <FontAwesomeIcon icon="spinner" spin />
               </div>
             );
-
+        
+          let itemsSector = [{id: 0, label: "All Values", value: false}];
+          for(let i = 0; i < allSectors.length; i++){
+            itemsSector.push({
+              id: i + 1,
+              label: allSectors[i].name,
+              value: false
+            });
+          }
           //const areMoreSecurities = allSecurities.length < _allSecuritiesMeta.count;
+          
           const areMoreSecurities = securities.length < 3600;
           return (
             <section style={{ paddingTop: '20px' }}>
               <div
                 className="columns is-mobile"
                 style={{ display: 'flex', flexFlow: 'wrap', justifyContent: 'space-around' }}
-              >
+              >{}
+                <div className="column" style={{ paddingTop: '25px' }}>
+                  <CustomDropdown key={0} title="Large caps" items={items} idx={0} hasSlider={false} getCustomDropDownState={getCustomDropDownState}/>
+                </div>
+                <div className="column" style={{ paddingTop: '25px' }}>
+                  <CustomDropdown key={1} title="All values" items={items} idx={1} hasSlider={false} getCustomDropDownState={getCustomDropDownState}/>
+                </div>
+                <div className="column" style={{ paddingTop: '25px' }}>
+                  <CustomDropdown key={2} title="All areas" items={items} idx={2} hasSlider={true} getCustomDropDownState={getCustomDropDownState}/>
+                </div>
+                <div className="column" style={{ paddingTop: '25px' }}>
+                  <CustomDropdown key={3} title="All sectors" items={itemsSector} idx={3} hasSlider={false} getCustomDropDownState={getCustomDropDownState}/>
+                </div>
+
+                <div className="column">
+                  <SingleSlider                    
+                    onChangeYear={handleChangeYear}
+                    width={270}
+                    height={70}
+                    years={years}
+                  />
+                </div>
+              </div>
+              <div
+                className="columns is-mobile"
+                style={{ display: 'flex', flexFlow: 'wrap', justifyContent: 'space-around' }}
+              >                
                 {securities.map((s, k) => (
-                  <div
-                    class="box has-text-grey"
-                    key={s.id}
-                    style={{ borderRadius: '1px', height: '320px', paddingTop: '0.6em', paddingRight: '0.1em' }}
-                  >
-                    <div className="columns" style={{ width: '230px', height: '28px' }}>
-                      <div className="column is-8">
-                        <Link key={s.id} href={`/security?id=${s.id}`} as={`/security/${s.id}`}>
-                          <h3
-                            class="subtitle is-5 has-text-weight-bold has-text-grey"
-                            style={{
-                              width: '130px',
-                              height: '50px',
-                              overflow: 'hidden',
-                              whiteSpace: 'nowrap',
-                              textOverflow: 'ellipsis'
-                            }}
-                          >
-                            {s.name}
-                          </h3>
-                        </Link>
-                      </div>
-                      <div className="column is-2">
-                        <a class="button is-dark is-small has-text-weight-bold" style={{ backgroundColor: '#7d7d7d' }}>
-                          &nbsp;+&nbsp;
-                        </a>
-                      </div>
-                      <div className="column is-1">
-                        <a class="button is-dark is-small has-text-weight-bold" style={{ backgroundColor: '#7d7d7d' }}>
-                          ...
-                        </a>
-                      </div>
-                    </div>
-                    <div style={{ height: '18px', fontSize: '11pt' }}>$100 +2.76%</div>
-                    <div style={{ height: '2px', fontSize: '11pt' }}>{s.name}</div>
-                    <hr />
-                    <div className={'RoundGraph' + k} style={{ width: '230px', height: '200px' }}>
-                      <RoundGraph key={k} index={k} security={securityTemp} />
-                    </div>
-                  </div>
+                    <LocalPortfolio key={s.id} index={s.id} security={s} showGraphCase={showCase} year={currentYear}/>
                 ))}
               </div>
               {areMoreSecurities ? (
-                <button onClick={() => loadMoreSecurities(securities, fetchMore)}>
+                <button className="button" onClick={() => loadMoreSecurities(securities, fetchMore)} style={{ backgroundColor: '#b9b9b9', color: 'white' }}>
                   {' '}
                   {loading ? 'Loading...' : 'Show More'}{' '}
                 </button>
@@ -287,6 +266,5 @@ function loadMoreSecurities(securities, fetchMore) {
     }
   });
 }
-
 
 export default SecuritySearch;
