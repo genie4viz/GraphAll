@@ -32,7 +32,7 @@ class Handle extends Component {
       const { initialValue, xScale } = this.state;
       const { handle } = this.props;
   
-      const circle = <circle r="7px" fill="#de0730" />;
+      const circle = <circle r="7px" fill="#de0730" style={{cursor: 'pointer'}}/>;
       const text = <text style={{ opacity: 1, fontSize: 14, fill: '#de0730', fontWeight: '600' }} />;
   
       return (

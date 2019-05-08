@@ -244,12 +244,12 @@ class RangeHandle extends React.Component {
       />
     );
     return (
-      <g className="sliderBar" onMouseOver={this.onMouseOver.bind(this)}>
+      <g className="sliderBar" onMouseOver={this.onMouseOver.bind(this)} style={{cursor: 'pointer'}}>
         {rectFillBar}
-        <g className="handleLeft" transform={`translate(${xScale(rangeStart)}, 0)`}>
+        <g className="handleLeft" transform={`translate(${xScale(rangeStart)}, 0)`} style={{cursor: 'pointer'}}>
           {rectHandler}
         </g>
-        <g className="handleRight" transform={`translate(${xScale(rangeEnd)}, 0)`}>
+        <g className="handleRight" transform={`translate(${xScale(rangeEnd)}, 0)`} style={{cursor: 'pointer'}}>
           {rectHandler}
         </g>
       </g>

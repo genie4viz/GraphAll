@@ -9,7 +9,7 @@ const dataRange = [
   { title: 'Return on equity', min: 0, max: 0.5, direction: 1 },
   { title: 'Revenue Growth', min: -30, max: 60, direction: 1 },
   { title: 'Debt-ratio', min: 0, max: 4, direction: 0 },
-  { title: 'N.t.b', min: 0, max: 4, direction: 1 }
+  { title: 'N.t.b', min: -3, max: 3, direction: 1 }
 ];
 
 class GaugeGraph extends Component {

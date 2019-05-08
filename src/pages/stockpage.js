@@ -111,7 +111,7 @@ class StockPage extends Component {
             <p className="control has-icons-left" style={{ width: 'inherit', paddingRight: 'inherit' }}>
               <input className="input" type="text" placeholder="Search a specific stock... " />
               <span className="icon is-small is-left">
-                <i class="fas fa-clock" />
+                <i className="fas fa-clock" />
               </span>
             </p>
             <button className="button" style={{ backgroundColor: '#b9b9b9', color: 'white', fontStyle: 'italic' }}>
@@ -125,7 +125,7 @@ class StockPage extends Component {
 
         <div className="columns is-mobile">
           <div className="column">
-            <h3 class="subtitle is-6 has-text-centered" style={{ height: '10px', color: '#a9a9a9' }}>
+            <h3 className="subtitle is-6 has-text-centered" style={{ height: '10px', color: '#a9a9a9' }}>
               All stocks show an average rating score based on Dividend, Balance, Growth and Value
             </h3>
           </div>
@@ -136,8 +136,8 @@ class StockPage extends Component {
           
         </div>
         <div className="column is-mobile is-tablet is-one-third-desktop is-one-third-widescreen is-one-third-fullhd">
-          <div class="box  has-text-grey">
-            <h4 class="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
+          <div className="box  has-text-grey">
+            <h4 className="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
               Apple
             </h4>
             <hr />
@@ -145,8 +145,8 @@ class StockPage extends Component {
               <CircularGraph security={securityTemp} />
             </div>
           </div>
-          <div class="box  has-text-grey">
-            <h4 class="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
+          <div className="box  has-text-grey">
+            <h4 className="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
               Apple
             </h4>
             <hr />
@@ -154,8 +154,8 @@ class StockPage extends Component {
               <CircularGraph security={securityTemp} />
             </div>
           </div>
-          <div class="box  has-text-grey">
-            <h4 class="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
+          <div className="box  has-text-grey">
+            <h4 className="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
               Apple
             </h4>
             <hr />
@@ -163,8 +163,8 @@ class StockPage extends Component {
               <CircularGraph security={securityTemp} />
             </div>
           </div>
-          <div class="box  has-text-grey">
-            <h4 class="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
+          <div className="box  has-text-grey">
+            <h4 className="subtitle is-5 has-text-weight-bold has-text-grey" style={{ height: '10px' }}>
               Apple
             </h4>
             <hr />

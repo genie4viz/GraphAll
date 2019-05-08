@@ -87,6 +87,7 @@ const RoundGraph = props => {
       .attr('opacity', (d, i) => (showGraphCase.length > 0 ? (showGraphCase[i + 1] ? 1 : 0) : 1))
       .style('stroke', '#fff')
       .style('stroke-width', 2)
+      .style('cursor','pointer')
       .on('click', function(d) {
         arcs.style('fill', 'grey');
         d3.select(this).style('fill', setColor(total));

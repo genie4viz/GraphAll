@@ -169,7 +169,7 @@ const CircularGraph = D3blackbox(function(anchor, props, state) {
       tooltip
         .html(
           `<b>${d.text}</b><br/>
-          <div class='sparkGraph sparkGraph-${security.id}'></div>
+          <div className='sparkGraph sparkGraph-${security.id}'></div>
           ${d.allValues.join(' - ')}
           `
         )

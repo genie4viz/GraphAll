@@ -34,11 +34,7 @@ class Index extends Component {
   }
 
   render() {
-    const {
-      session,
-      navMenu,
-      data: { allSecurities }
-    } = this.props;
+    const { session, navMenu, data } = this.props;
 
     return (
       <LayoutBasic
@@ -50,16 +46,23 @@ class Index extends Component {
         signinBtn={true}
       >
         <div className="content">
+          <p>
+            <Link href="/security-search" prefetch={true}>
+              <a>Security search</a>
+            </Link>
+          </p>
+
           <ul>
-            {allSecurities.map(s => (
-              <li key={s.id}>
-                <Link key={s.id} href={`/security?id=${s.id}`} as={`/security/${s.id}`}>
-                  <a>{s.name}</a>
-                </Link>
-              </li>
-            ))}
+            {data &&
+              data.allSecurities &&
+              data.allSecurities.map(s => (
+                <li key={s.id}>
+                  <Link key={s.id} href={`/security?id=${s.id}`} as={`/security/${s.id}`}>
+                    <a>{s.name}</a>
+                  </Link>
+                </li>
+              ))}
           </ul>
- 
           <p>
             <Link href="/horizon">
               <a>Horizon graph</a>
@@ -93,11 +96,6 @@ class Index extends Component {
           <p>
             <Link href="/area">
               <a>Area graph</a>
-            </Link>
-          </p>
-          <p>
-            <Link href="/security-search" prefetch={true}>
-              <a>Security search</a>
             </Link>
           </p>
         </div>

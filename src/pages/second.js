@@ -207,7 +207,6 @@ class Second extends Component {
       data: { security }
     } = this.props;
 
-    console.log(security, 'from security.js');
 
     let gauges = this.getGaugeArray(security.calculated);
 

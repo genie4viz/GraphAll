@@ -15,14 +15,14 @@ const DropdownItem = props => {
 
   return (
     <div className="dropdown-item columns" style={{ width: '190px', padding: '0.2rem', margin: '0px' }}>
-      <div class="column is-7">
+      <div className="column is-7">
         <p>{label}</p>
       </div>
-      <div class="column is-right">
-        <div class="field" style={{ paddingTop: '0.5em' }}>
+      <div className="column is-right">
+        <div className="field" style={{ paddingTop: '0.5em' }}>
           {check ? (
             <input
-              class={'is-checkradio is-rtl has-background-color is-danger'}
+            className={'is-checkradio is-rtl has-background-color is-danger'}
               id={'checkbox' + index}
               type="checkbox"
               onChange={changeCheck}
@@ -30,7 +30,7 @@ const DropdownItem = props => {
             />
           ) : (
             <input
-              class={'is-checkradio is-rtl has-background-color'}
+            className={'is-checkradio is-rtl has-background-color'}
               id={'checkbox' + index}
               type="checkbox"
               onChange={changeCheck}
@@ -96,19 +96,18 @@ const CustomDropdown = props => {
   
   return (
     <div className={'dropdown'} ref={dropDownRef}>
-      <div class="navbar-item has-dropdown is-hoverable" style={{ width: '190px', margin: '1px' }}>
+      <div className="navbar-item has-dropdown is-hoverable" style={{ width: '190px', margin: '1px' }}>
         <a
-          href="#!"
-          class="box navbar-link has-text-centered has-text-weight-bold has-text-grey"
+          className="box navbar-link has-text-centered has-text-weight-bold has-text-grey"
           style={{ width: '190px', marginBottom:'0.3rem' }}
         >
           {title}
         </a>
         <div
-          class="navbar-dropdown is-boxed"
+          className="navbar-dropdown is-boxed"
           id="dropdown-menu"
           role="menu"
-          style={{ paddingTop: '0px' }}
+          style={{ padding: '0px' }}
         >
           <div
             className="dropdown-content"

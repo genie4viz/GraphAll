@@ -12,8 +12,12 @@ class AppProvider extends Component {
     this.state = {
       securityFilterText: '',
       setSecurityFilterText: this.setSecurityFilterText,
-      securityFilterYear: 2019,
+      securityFilterYear: 2018,
       setSecurityFilterYear: this.setSecurityFilterYear,
+      showCase: [true, true, true, true, true],
+      setShowCase: this.setShowCase,
+      securityFilterSectors: ['Finance','ConsumerServices'],
+      setSecurityFilterSectors: this.setSecurityFilterSectors,
       navMenu: true,
       turnOffNavMenu: this.turnOffNavMenu,
       turnOnNavMenu: this.turnOnNavMenu
@@ -38,6 +42,14 @@ class AppProvider extends Component {
 
   setSecurityFilterYear = year => {
     this.setState({ securityFilterYear: year });
+  };
+
+  setShowCase = showCase => {
+    this.setState({ showCase });
+  };
+
+  setSecurityFilterSectors = newSectorSelection =>{
+    this.setState({securityFilterSectors: newSectorSelection})
   };
 
   render() {

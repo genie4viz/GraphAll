@@ -52,7 +52,7 @@ class Index extends Component {
   }
   render() {
     const { session, navMenu, data } = this.props;
-    console.log(data[0].calculated);
+    
     return (
       <LayoutBasic
         {...this.props}

@@ -2,6 +2,7 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import fetch from 'isomorphic-unfetch';
+import gql from 'graphql-tag';
 
 let apolloClient = null;
 
@@ -16,7 +17,39 @@ function create(initialState) {
       // Use fetch() polyfill on the server
       fetch: !process.browser && fetch
     }),
-    cache: new InMemoryCache().restore(initialState || {})
+    cache: new InMemoryCache().restore(initialState || {}),
+    typeDefs: gql`
+      extend type Security {
+        isInLocalPortfolio: Boolean!
+      }
+    `,
+    resolvers: {
+      Security: {
+        isInLocalPortfolio: (security, _args, { cache }) => {
+          // todo: implement this
+          //console.log('the id is: ', security.id);
+          // const { cartItems } = cache.readQuery({
+          //   query: GET_CART_ITEMS
+          // });
+          //return cartItems.includes(launch.id);
+          return false;
+        }
+      },
+      Mutation: {
+        toggleLocalPortfolio: (_root, variables, { cache, getCacheKey }) => {
+          const id = getCacheKey({ __typename: 'Security', id: variables.id });
+          const fragment = gql`
+            fragment localPortfolio on Security {
+              isInLocalPortfolio
+            }
+          `;
+          const security = cache.readFragment({ fragment, id });
+          const data = { ...security, isInLocalPortfolio: !security.isInLocalPortfolio };
+          cache.writeData({ id, data });
+          return null;
+        }
+      }
+    }
   });
 }
 

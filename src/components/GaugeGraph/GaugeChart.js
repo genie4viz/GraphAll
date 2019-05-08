@@ -273,7 +273,7 @@ class GaugeChart extends Component {
           <text
             x="0"
             y="0"
-            class={'percentText' + kind}
+            className={'percentText' + kind}
             textAnchor="middle"
             style={{ fontSize: svgDimen.width * 0.12, fill: '#929292', fontWeight: '600' }}
           >
